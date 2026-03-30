@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: nongnghiep
+  datasource:
+    #    # URL kết nối: jdbc:sqlserver://[host]:[port];databaseName=[tên_db];encrypt=true;trustServerCertificate=true;
+    #    url: jdbc:sqlserver://localhost:1433;databaseName=IOT;encrypt=true;trustServerCertificate=true;
+    #    username: nam
+    #    password: 123456
+    #    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+
+    url: jdbc:mysql://localhost:3306/iot?allowPublicKeyRetrieval=true&useSSL=false
+    username: root
+    password: 123456
+# Spring Boot can auto-detect the driver class name, so this line is optional in most cases
+# spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+
+mqtt:
+  uri: tcp://localhost:1883
