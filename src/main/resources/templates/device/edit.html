@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>DHn</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<div th:replace="fragment/userLayout :: header"></div>
+
+
+<form th:action="@{/device/edit/{id}(id=${device.id})}" method="post" th:object="${device}">
+
+    <label>Name:</label>
+    <input type="text" th:field="*{name}" />
+
+    <label>TypeDevice:</label>
+    <input type="text" th:field="*{typeDevice}" />
+
+    <button type="submit">Sửa</button>
+</form>
+
+<div th:replace="fragment/userLayout :: footer"></div>
+</body>
+</html>

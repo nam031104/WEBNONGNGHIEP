@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>DHn</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <div th:replace="fragment/userLayout :: header"></div>
+
+    <h1>Thiết bị</h1>
+    <button onclick="addItem"> Thêm thiết bị  </button>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Type Device</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="i : ${devices}">
+            <td th:text="${i.idDevice}"></td>
+            <td th:text="${i.name}"></td>
+            <td th:text="${i.typeDevice}"></td>
+            <td>
+                <a th:href="@{'/device/edit/' + ${i.idDevice}}">Sửa</a>
+            </td>
+            <td>
+                <a th:href="@{'/device/delete/' + ${i.idDevice}}"
+                   onclick="return confirm('Bạn chắc chắn xóa?')">Xóa</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+
+    <div th:replace="fragment/userLayout :: footer"></div>
+</body>
+</html>

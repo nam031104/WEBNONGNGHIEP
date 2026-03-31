@@ -1,66 +1,64 @@
 package btl.nongnghiep.Device.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
+@Table(name = "device")
 public class Device {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String Id;
-    private String IdUser;
-    private String Name;
-    private String TypeDevice;
-    private int Status;
-    private String Note;
+    private String idDevice;
+    private String idUser;
+    private String name;
+    private String typeDevice;
+    private int status;
+    private String note;
 
-    public String getId() {
-        return Id;
+    public String getIdDevice() {
+        return idDevice;
     }
 
-    public void setId(String id) {
-        Id = id;
+    public void setIdDevice(String idDevice) {
+        this.idDevice = idDevice;
     }
 
     public String getIdUser() {
-        return IdUser;
+        return idUser;
     }
 
     public void setIdUser(String idUser) {
-        IdUser = idUser;
+        this.idUser = idUser;
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 
     public String getTypeDevice() {
-        return TypeDevice;
+        return typeDevice;
     }
 
     public void setTypeDevice(String typeDevice) {
-        TypeDevice = typeDevice;
+        this.typeDevice = typeDevice;
     }
 
     public int getStatus() {
-        return Status;
+        return status;
     }
 
     public void setStatus(int status) {
-        Status = status;
+        this.status = status;
     }
 
     public String getNote() {
-        return Note;
+        return note;
     }
 
     public void setNote(String note) {
-        Note = note;
+        this.note = note;
     }
 }

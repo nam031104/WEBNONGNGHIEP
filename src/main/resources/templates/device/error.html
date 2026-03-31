@@ -1,0 +1,18 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>DHn</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<div th:replace="fragment/userLayout :: header"></div>
+
+<div th:if="${message}">
+    <p th:text="${message}" style="color:red;"></p>
+</div>
+
+<a th:href="@{'/device'}">Quay lại trang chủ</a>
+
+<div th:replace="fragment/userLayout :: footer"></div>
+</body>
+</html>
