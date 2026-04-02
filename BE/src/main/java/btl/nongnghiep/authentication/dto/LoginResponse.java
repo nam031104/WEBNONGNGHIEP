@@ -1,4 +1,4 @@
-package com.auth.authentication.dto;
+package btl.nongnghiep.authentication.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,3 +19,4 @@ public class LoginResponse {
     private String email;
     private String role;
 }
+

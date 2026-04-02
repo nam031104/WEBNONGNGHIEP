@@ -1,11 +1,11 @@
-package com.auth.authentication.controller;
+package btl.nongnghiep.authentication.controller;
 
-import com.auth.authentication.dto.LoginRequest;
-import com.auth.authentication.dto.LoginResponse;
-import com.auth.authentication.dto.RegisterRequest;
-import com.auth.authentication.dto.RegisterResponse;
-import com.auth.authentication.security.JwtTokenProvider;
-import com.auth.authentication.service.AuthService;
+import btl.nongnghiep.authentication.dto.LoginRequest;
+import btl.nongnghiep.authentication.dto.LoginResponse;
+import btl.nongnghiep.authentication.dto.RegisterRequest;
+import btl.nongnghiep.authentication.dto.RegisterResponse;
+import btl.nongnghiep.authentication.security.JwtTokenProvider;
+import btl.nongnghiep.authentication.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -103,3 +103,4 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 }
+

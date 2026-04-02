@@ -26,7 +26,7 @@ REST API xac thuc tai khoan su dung Spring Boot, Spring Security, JWT va Postgre
 
 ```text
 BE_Login/
-|- src/main/java/com/auth/
+|- src/main/java/btl/nongnghiep/
 |  |- BeLoginApplication.java
 |  \- authentication/
 |     |- config/
@@ -226,3 +226,4 @@ Script khoi tao tuong ung:
 - Tai lieu cu co nhac den `users` va `userId`; hien tai da chuyen sang `account` va `accountId`
 - Neu database cua ban da co bang `account`, code backend hien tai da map dung theo bang do
 - Neu da co du lieu cu, can dam bao `username` va `email` khong bi trung
+

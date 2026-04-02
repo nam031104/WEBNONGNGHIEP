@@ -33,8 +33,9 @@ server:
 logging:
   level:
     root: INFO
-    com.auth: DEBUG
+    btl.nongnghiep: DEBUG
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} - %logger{36} - %msg%n"
+

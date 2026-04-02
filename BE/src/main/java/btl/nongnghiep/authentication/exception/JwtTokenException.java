@@ -1,4 +1,4 @@
-package com.auth.authentication.exception;
+package btl.nongnghiep.authentication.exception;
 
 public class JwtTokenException extends RuntimeException {
 
@@ -10,3 +10,4 @@ public class JwtTokenException extends RuntimeException {
         super(message, cause);
     }
 }
+

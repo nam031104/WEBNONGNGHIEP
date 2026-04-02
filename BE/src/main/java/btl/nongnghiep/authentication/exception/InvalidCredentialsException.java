@@ -1,4 +1,4 @@
-package com.auth.authentication.exception;
+package btl.nongnghiep.authentication.exception;
 
 public class InvalidCredentialsException extends RuntimeException {
 
@@ -6,3 +6,4 @@ public class InvalidCredentialsException extends RuntimeException {
         super(message);
     }
 }
+

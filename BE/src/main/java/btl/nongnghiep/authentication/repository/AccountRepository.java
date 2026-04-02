@@ -1,6 +1,6 @@
-package com.auth.authentication.repository;
+package btl.nongnghiep.authentication.repository;
 
-import com.auth.authentication.entity.Account;
+import btl.nongnghiep.authentication.entity.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
@@ -15,3 +15,4 @@ public interface AccountRepository extends JpaRepository<Account, String> {
 
     boolean existsByEmail(String email);
 }
+

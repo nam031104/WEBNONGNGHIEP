@@ -1,14 +1,14 @@
-package com.auth.authentication.service;
+package btl.nongnghiep.authentication.service;
 
-import com.auth.authentication.dto.LoginRequest;
-import com.auth.authentication.dto.LoginResponse;
-import com.auth.authentication.dto.RegisterRequest;
-import com.auth.authentication.dto.RegisterResponse;
-import com.auth.authentication.entity.Account;
-import com.auth.authentication.exception.InvalidCredentialsException;
-import com.auth.authentication.exception.ResourceAlreadyExistsException;
-import com.auth.authentication.repository.AccountRepository;
-import com.auth.authentication.security.JwtTokenProvider;
+import btl.nongnghiep.authentication.dto.LoginRequest;
+import btl.nongnghiep.authentication.dto.LoginResponse;
+import btl.nongnghiep.authentication.dto.RegisterRequest;
+import btl.nongnghiep.authentication.dto.RegisterResponse;
+import btl.nongnghiep.authentication.entity.Account;
+import btl.nongnghiep.authentication.exception.InvalidCredentialsException;
+import btl.nongnghiep.authentication.exception.ResourceAlreadyExistsException;
+import btl.nongnghiep.authentication.repository.AccountRepository;
+import btl.nongnghiep.authentication.security.JwtTokenProvider;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -104,3 +104,4 @@ public class AuthService {
         return passwordEncoder.matches(rawPassword, hashedPassword);
     }
 }
+

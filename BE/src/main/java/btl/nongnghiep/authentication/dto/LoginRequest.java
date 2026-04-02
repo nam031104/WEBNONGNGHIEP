@@ -1,4 +1,4 @@
-package com.auth.authentication.dto;
+package btl.nongnghiep.authentication.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -18,3 +18,4 @@ public class LoginRequest {
     @NotBlank(message = "Password khong duoc de trong")
     private String password;
 }
+

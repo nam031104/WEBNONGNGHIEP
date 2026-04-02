@@ -1,4 +1,4 @@
-package com.auth.authentication.dto;
+package btl.nongnghiep.authentication.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -27,3 +27,4 @@ public class RegisterRequest {
     @Size(min = 6, max = 255, message = "Password phai tu 6 ky tu tro len")
     private String password;
 }
+

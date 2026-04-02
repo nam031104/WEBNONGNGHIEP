@@ -1,8 +1,8 @@
-package com.auth.authentication.config;
+package btl.nongnghiep.authentication.config;
 
-import com.auth.authentication.security.CustomUserDetailsService;
-import com.auth.authentication.security.JwtAuthenticationFilter;
-import com.auth.authentication.security.JwtTokenProvider;
+import btl.nongnghiep.authentication.security.CustomUserDetailsService;
+import btl.nongnghiep.authentication.security.JwtAuthenticationFilter;
+import btl.nongnghiep.authentication.security.JwtTokenProvider;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -115,3 +115,4 @@ public class SecurityConfig {
         return http.build();
     }
 }
+

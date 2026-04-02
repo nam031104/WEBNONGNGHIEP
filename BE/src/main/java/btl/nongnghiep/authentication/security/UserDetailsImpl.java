@@ -1,6 +1,6 @@
-package com.auth.authentication.security;
+package btl.nongnghiep.authentication.security;
 
-import com.auth.authentication.entity.Account;
+import btl.nongnghiep.authentication.entity.Account;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -74,3 +74,4 @@ public class UserDetailsImpl implements UserDetails {
         return true;
     }
 }
+

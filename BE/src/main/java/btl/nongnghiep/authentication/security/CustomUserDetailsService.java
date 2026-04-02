@@ -1,8 +1,8 @@
-package com.auth.authentication.security;
+package btl.nongnghiep.authentication.security;
 
-import com.auth.authentication.entity.Account;
-import com.auth.authentication.exception.ResourceNotFoundException;
-import com.auth.authentication.repository.AccountRepository;
+import btl.nongnghiep.authentication.entity.Account;
+import btl.nongnghiep.authentication.exception.ResourceNotFoundException;
+import btl.nongnghiep.authentication.repository.AccountRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -30,3 +30,4 @@ public class CustomUserDetailsService implements UserDetailsService {
         return UserDetailsImpl.build(account);
     }
 }
+

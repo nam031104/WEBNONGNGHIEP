@@ -1,6 +1,6 @@
-package com.auth.authentication.security;
+package btl.nongnghiep.authentication.security;
 
-import com.auth.authentication.exception.JwtTokenException;
+import btl.nongnghiep.authentication.exception.JwtTokenException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -100,3 +100,4 @@ public class JwtTokenProvider {
         return jwtExpirationMs;
     }
 }
+

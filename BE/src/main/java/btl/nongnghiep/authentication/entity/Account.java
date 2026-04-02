@@ -1,4 +1,4 @@
-package com.auth.authentication.entity;
+package btl.nongnghiep.authentication.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -58,3 +58,4 @@ public class Account {
         }
     }
 }
+
