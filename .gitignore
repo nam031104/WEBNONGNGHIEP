@@ -1,33 +1,49 @@
-HELP.md
+# Maven
 target/
-.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.asc
+.flattened-pom.xml
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
+# IDE
+.idea/
 .vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Application
+*.log
+*.pid
+!.mvn/wrapper/maven-wrapper.jar
+.mvn/timing.properties
+.mvn/timing.properties.lock
+
+# Spring Boot
+application-*.yaml
+application-*.properties
+!src/main/resources/application-postgres.yaml
+!src/main/resources/application-mysql.yaml
+!src/main/resources/application-example.yaml
+!BE/src/main/resources/application-postgres.yaml
+!BE/src/main/resources/application-mysql.yaml
+!BE/src/main/resources/application-example.yaml
+
+# Database
+*.db
+*.sqlite
+
+# Environment variables
+.env
+.env.local
