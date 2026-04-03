@@ -3,21 +3,16 @@
 <head>
     <title>DHn</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
 </head>
 <body>
 <div th:replace="fragment/userLayout :: header"></div>
 
+<h2>Thiết bị chờ xác nhận</h2>
+<div id="devices"></div>
 
-<form th:action="@{/device/edit/{id}(id=${device.idDevice})}" method="post" th:object="${deviceDto}">
-
-    <label>Name:</label>
-    <input type="text" th:field="*{name}" />
-
-    <label>TypeDevice:</label>
-    <input type="text" th:field="*{typeDevice}" />
-
-    <button type="submit">Sửa</button>
-</form>
+<script src="../../static/js/createDevice.js"></script>
 
 <div th:replace="fragment/userLayout :: footer"></div>
 </body>

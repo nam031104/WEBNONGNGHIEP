@@ -12,6 +12,9 @@ import java.util.List;
 @Repository
 public interface DeviceRepository extends JpaRepository<Device,String> {
 
-    @Query("select d from Device d where d.idUser = :id")
-     List<Device> findByUserId(@Param("id") String id);
+    @Query("SELECT DISTINCT d FROM Device d " +
+            "LEFT JOIN FETCH d.actors " +
+            "LEFT JOIN FETCH d.sensors " +
+            "WHERE d.idUser = :idUser")
+    List<Device> findByUserWithActorsAndSensors(@Param("idUser") String idUser);
 }

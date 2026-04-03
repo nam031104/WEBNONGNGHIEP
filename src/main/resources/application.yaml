@@ -14,5 +14,11 @@ spring:
 # Spring Boot can auto-detect the driver class name, so this line is optional in most cases
 # spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 
+jwt:
+  secret: ${JWT_SECRET:mySecretKeyForJWTAuthenticationAndAuthorizationiVeryLongAndSecureKey12345}
+  expiration: 86400000 # 24 hours in milliseconds
+  refresh-expiration: 604800000 # 7 days in milliseconds
+
+
 mqtt:
   uri: tcp://localhost:1883

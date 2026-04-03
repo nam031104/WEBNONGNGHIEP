@@ -8,7 +8,9 @@
     <div th:replace="fragment/userLayout :: header"></div>
 
     <h1>Thiết bị</h1>
-    <button onclick="addItem"> Thêm thiết bị  </button>
+    <button onclick="addItem">
+        <a th:href="@{'/device/create'}"> Thêm thiết bị </a>
+    </button>
     <table>
         <thead>
         <tr>
@@ -18,7 +20,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="i : ${devices}">
+        <tr th:each="i : ${deviceDtos}">
             <td th:text="${i.idDevice}"></td>
             <td th:text="${i.name}"></td>
             <td th:text="${i.typeDevice}"></td>
