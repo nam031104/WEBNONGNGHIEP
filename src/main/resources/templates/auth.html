@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dang nhap / Dang ky</title>
+    <style>
+        :root {
+            --bg-start: #f3f7ff;
+            --bg-end: #dfeeff;
+            --card: #ffffff;
+            --primary: #1d4ed8;
+            --primary-dark: #1e3a8a;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --border: #dbe3f0;
+            --success: #0f766e;
+            --error-bg: #fef2f2;
+            --error-text: #b91c1c;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
+            padding: 24px;
+            color: var(--text);
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 420px;
+            background: var(--card);
+            border-radius: 20px;
+            padding: 32px 28px;
+            box-shadow: 0 20px 45px rgba(29, 78, 216, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 28px;
+            color: var(--primary-dark);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--muted);
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .tab-btn {
+            border: none;
+            border-radius: 12px;
+            padding: 12px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            background: #eef4ff;
+            color: var(--primary-dark);
+            transition: 0.2s ease;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .form-panel {
+            display: none;
+        }
+
+        .form-panel.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 12px;
+            background: var(--primary);
+            color: #fff;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .submit-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .helper-text {
+            margin-top: 14px;
+            text-align: center;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .message {
+            display: none;
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 12px;
+            background: #ecfdf5;
+            color: var(--success);
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .message.error {
+            background: var(--error-bg);
+            color: var(--error-text);
+        }
+
+        @media (max-width: 480px) {
+            .auth-card {
+                padding: 24px 18px;
+            }
+
+            .title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-card">
+        <h1 class="title">Tai khoan nguoi dung</h1>
+        <p class="subtitle">Mau giao dien HTML don gian cho dang nhap va dang ky</p>
+
+        <div class="tabs">
+            <button class="tab-btn active" type="button" data-target="login-form">Dang nhap</button>
+            <button class="tab-btn" type="button" data-target="register-form">Dang ky</button>
+        </div>
+
+        <form id="login-form" class="form-panel active">
+            <div class="form-group">
+                <label for="login-username">Username</label>
+                <input id="login-username" type="text" placeholder="Nhap username" required>
+            </div>
+            <div class="form-group">
+                <label for="login-password">Mat khau</label>
+                <input id="login-password" type="password" placeholder="Nhap mat khau" required>
+            </div>
+            <button class="submit-btn" type="submit">Dang nhap</button>
+            <p class="helper-text">Chua co tai khoan? Bam tab Dang ky ben tren.</p>
+        </form>
+
+        <form id="register-form" class="form-panel">
+            <div class="form-group">
+                <label for="register-username">Username</label>
+                <input id="register-username" type="text" placeholder="Nhap username" required>
+            </div>
+            <div class="form-group">
+                <label for="register-email">Email</label>
+                <input id="register-email" type="email" placeholder="Nhap email" required>
+            </div>
+            <div class="form-group">
+                <label for="register-password">Mat khau</label>
+                <input id="register-password" type="password" placeholder="Tao mat khau" required>
+            </div>
+            <div class="form-group">
+                <label for="register-confirm-password">Xac nhan mat khau</label>
+                <input id="register-confirm-password" type="password" placeholder="Nhap lai mat khau" required>
+            </div>
+            <button class="submit-btn" type="submit">Dang ky</button>
+            <p class="helper-text">Ban da co tai khoan? Chuyen sang tab Dang nhap.</p>
+        </form>
+
+        <div id="message" class="message"></div>
+    </div>
+
+    <script>
+        const tabButtons = document.querySelectorAll(".tab-btn");
+        const formPanels = document.querySelectorAll(".form-panel");
+        const messageBox = document.getElementById("message");
+        const loginForm = document.getElementById("login-form");
+        const registerForm = document.getElementById("register-form");
+
+        function showMessage(text, isError = false) {
+            messageBox.textContent = text;
+            messageBox.classList.add("show");
+            messageBox.classList.toggle("error", isError);
+        }
+
+        function clearMessage() {
+            messageBox.textContent = "";
+            messageBox.classList.remove("show", "error");
+        }
+
+        tabButtons.forEach((button) => {
+            button.addEventListener("click", () => {
+                const targetId = button.dataset.target;
+
+                tabButtons.forEach((btn) => btn.classList.remove("active"));
+                formPanels.forEach((panel) => panel.classList.remove("active"));
+
+                button.classList.add("active");
+                document.getElementById(targetId).classList.add("active");
+                clearMessage();
+            });
+        });
+
+        loginForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const username = document.getElementById("login-username").value.trim();
+            const password = document.getElementById("login-password").value;
+
+            try {
+                const response = await fetch("auth/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    credentials: "same-origin",
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showMessage(data.message || "Dang nhap that bai.", true);
+                    return;
+                }
+
+                localStorage.setItem("authToken", data.token || "");
+                localStorage.setItem("accountId", data.accountId || "");
+                localStorage.setItem("username", data.username || "");
+                showMessage("Dang nhap thanh cong. Xin chao " + (data.username || username) + "!");
+            } catch (error) {
+                showMessage("Khong the ket noi toi server. Kiem tra backend dang chay.", true);
+            }
+        });
+
+        registerForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const username = document.getElementById("register-username").value.trim();
+            const email = document.getElementById("register-email").value.trim();
+            const password = document.getElementById("register-password").value;
+            const confirmPassword = document.getElementById("register-confirm-password").value;
+
+            if (password !== confirmPassword) {
+                showMessage("Mat khau xac nhan khong khop.", true);
+                return;
+            }
+
+            try {
+                const response = await fetch("auth/register", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    credentials: "same-origin",
+                    body: JSON.stringify({ username, email, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showMessage(data.message || "Dang ky that bai.", true);
+                    return;
+                }
+
+                showMessage((data.message || "Dang ky thanh cong.") + " Username: " + (data.username || username));
+                registerForm.reset();
+            } catch (error) {
+                showMessage("Khong the ket noi toi server. Kiem tra backend dang chay.", true);
+            }
+        });
+    </script>
+</body>
+</html>
