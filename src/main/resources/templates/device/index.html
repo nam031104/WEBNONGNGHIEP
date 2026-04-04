@@ -3,39 +3,55 @@
 <head>
     <title>DHn</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+        table, th, td { border: 1px solid black; border-collapse: collapse; padding: 8px;}
+    </style>
 </head>
 <body>
-    <div th:replace="fragment/userLayout :: header"></div>
+<div th:replace="fragment/userLayout :: header"></div>
 
-    <h1>Thiết bị</h1>
-    <button onclick="addItem">
-        <a th:href="@{'/device/create'}"> Thêm thiết bị </a>
-    </button>
-    <table>
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Type Device</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="i : ${deviceDtos}">
-            <td th:text="${i.idDevice}"></td>
-            <td th:text="${i.name}"></td>
-            <td th:text="${i.typeDevice}"></td>
-            <td>
-                <a th:href="@{'/device/edit/' + ${i.idDevice}}">Sửa</a>
-            </td>
-            <td>
-                <a th:href="@{'/device/delete/' + ${i.idDevice}}"
-                   onclick="return confirm('Bạn chắc chắn xóa?')">Xóa</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+<h1>Thiết bị</h1>
+<button>
+    <a th:href="@{'/device/create'}"> Thêm thiết bị </a>
+</button>
 
+<br><br>
 
-    <div th:replace="fragment/userLayout :: footer"></div>
+<table>
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Type Device</th>
+        <th>Sensors</th>
+        <th>Actors</th>
+        <th>Hành động</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="device : ${deviceDtos}">
+        <td th:text="${device.name}"></td>
+        <td th:text="${device.typeDevice}"></td>
+
+        <td>
+            <ul>
+                <li th:each="sensor : ${device.sensors}" th:text="${sensor.typeSensor}"></li>
+            </ul>
+        </td>
+
+        <td>
+            <ul>
+                <li th:each="actor : ${device.actors}" th:text="${actor.typeActor}"></li>
+            </ul>
+        </td>
+
+        <td>
+            <a th:href="@{'/device/delete/' + ${device.idDevice}}"
+               onclick="return confirm('Bạn chắc chắn xóa?')">Xóa</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div th:replace="fragment/userLayout :: footer"></div>
 </body>
 </html>
