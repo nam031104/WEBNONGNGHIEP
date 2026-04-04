@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT Nong Nghiep</title>
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+</head>
+<body>
+<main class="auth-shell">
+    <section class="auth-card wide">
+        <p class="eyebrow">IoT Nong Nghiep</p>
+        <h1>He thong quan ly tai khoan</h1>
+        <p class="subtitle">Mo local la thay ngay hai lua chon. Sau khi dang nhap, USER vao trang user, ADMIN vao trang admin rieng.</p>
+
+        <div class="hero-actions">
+            <a class="action-link" th:href="@{/login}">Dang nhap</a>
+            <a class="action-link secondary" th:href="@{/register}">Dang ky</a>
+        </div>
+    </section>
+</main>
+</body>
+</html>
