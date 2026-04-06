@@ -30,27 +30,33 @@ public class Mqtt {
                     new MemoryPersistence()
             );
 
-            client.setCallback(new MqttCallback() {
+            client.setCallback(new MqttCallbackExtended() {
+
+                @Override
+                public void connectComplete(boolean reconnect, String serverURI) {
+                    System.out.println("Connected/reconnected to: " + serverURI);
+
+                    try {
+                        client.subscribe("esp/+/+/data", 0);
+                        System.out.println("Subscribed again!");
+                    } catch (MqttException e) {
+                        e.printStackTrace();
+                    }
+                }
 
                 @Override
                 public void connectionLost(Throwable cause) {
-                    System.out.println("Connection lost, reconnecting...");
-                    reconnect();
+                    System.out.println("Connection lost!");
                 }
 
                 @Override
                 public void messageArrived(String topic, MqttMessage message) {
                     String msg = new String(message.getPayload(), UTF_8);
-
-                    System.out.println("Received [" + topic + "]: " + msg);
-
                     mqttService.Mqtthandle(topic, msg);
                 }
 
                 @Override
-                public void deliveryComplete(IMqttDeliveryToken token) {
-                    // optional
-                }
+                public void deliveryComplete(IMqttDeliveryToken token) {}
             });
 
 
@@ -64,30 +70,27 @@ public class Mqtt {
             System.out.println("MQTT connected to: " + uri);
 
 
-            client.subscribe("test/topic", 0);
-            client.publish("test","Hello Word".getBytes(UTF_8),0,false);
-
         } catch (MqttException e) {
             e.printStackTrace();
         }
     }
 
 
-    private void reconnect() {
-        int retry = 0;
-        while (retry < 5) {
-            try {
-                Thread.sleep(5000);
-                client.reconnect();
-                System.out.println("Reconnected!");
-                return;
-            } catch (Exception e) {
-                retry++;
-                System.out.println("Retry " + retry);
-            }
-        }
-        System.out.println("Reconnect failed!");
-    }
+//    private void reconnect() {
+//        int retry = 0;
+//        while (retry < 5) {
+//            try {
+//                Thread.sleep(5000);
+//                client.reconnect();
+//                System.out.println("Reconnected!");
+//                return;
+//            } catch (Exception e) {
+//                retry++;
+//                System.out.println("Retry " + retry);
+//            }
+//        }
+//        System.out.println("Reconnect failed!");
+//    }
 
 
     public void MqttPub(String topic, String message, int qos) {

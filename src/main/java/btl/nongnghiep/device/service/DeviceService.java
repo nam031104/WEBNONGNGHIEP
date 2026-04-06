@@ -1,5 +1,7 @@
 package btl.nongnghiep.device.service;
 
+import btl.nongnghiep.account.entity.Account;
+import btl.nongnghiep.account.repository.AccountRepository;
 import btl.nongnghiep.device.dto.CreateDeviceDto;
 import btl.nongnghiep.device.dto.DeviceDto;
 import btl.nongnghiep.device.entity.Device;
@@ -17,22 +19,32 @@ import java.util.Optional;
 public class DeviceService {
 
     private final DeviceRepository deviceRepository;
+    private final AccountRepository accountRepository;
     // Spring tu goi ham va truyen deviceRepository
-    public DeviceService(DeviceRepository deviceRepository) {
+    public DeviceService(DeviceRepository deviceRepository,AccountRepository accountRepository) {
         this.deviceRepository = deviceRepository;
+        this.accountRepository = accountRepository;
     }
     @Transactional
-    public CreateDeviceDto createDevice(CreateDeviceDto createDeviceDto,String idUser) {
+    public CreateDeviceDto createDevice(CreateDeviceDto createDeviceDto,String username) {
         Device device = createDeviceDto.toEntity();
-        device.setIdAccount(idUser);
+        Account account = accountRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+
+        String idAccount = account.getIdAccount();
+        device.setIdAccount(idAccount);
         Device deviceSaved = deviceRepository.save(device);
         return deviceSaved.toDto();
     }
 
     @Transactional
-    public List<DeviceDto> getDevicesByUser(String idUser) {
-        List<Device> devices = deviceRepository.findByUserIdWithActors(idUser);
-        devices = deviceRepository.findByUserIdWithSensors(idUser);
+    public List<DeviceDto> getDevicesByUsername(String username) {
+        Account account = accountRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+
+        String idAccount = account.getIdAccount();
+        List<Device> devices = deviceRepository.findByUserIdWithActors(idAccount);
+        devices = deviceRepository.findByUserIdWithSensors(idAccount);
 
         return devices.stream()
                 .map(device -> device.toDeviceDto())

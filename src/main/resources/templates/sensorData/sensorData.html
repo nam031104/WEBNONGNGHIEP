@@ -5,17 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+    <style>
+        table, th, td { border: 1px solid black; border-collapse: collapse; padding: 8px;}
+    </style>
 </head>
 <body>
 <div th:replace="fragment/userLayout :: header"></div>
 
-<h2>Thiết bị chờ xác nhận</h2>
-<div th:text="'username: ' + ${username}"></div>
-<div id="devices"></div>
+<h1>Cam bien</h1>
 
+<div id="Sensors"></div>
 
-<script th:src="@{/js/createDevice.js}"></script>
-
+<script th:src="@{/js/sensorData.js}"></script>
 <div th:replace="fragment/userLayout :: footer"></div>
 </body>
 </html>

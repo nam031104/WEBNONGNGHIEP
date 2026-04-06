@@ -2,8 +2,7 @@ const socket = new SockJS('/ws');
 const stompClient = Stomp.over(socket);
 
 stompClient.connect({}, function () {
-//khi nào lam dang ki dang nhap xong thì sub vào user/topic/devices
- stompClient.subscribe('/topic/devices', function (message) {
+ stompClient.subscribe('/user/topic/devices', function (message) {
   const device = JSON.parse(message.body);
 
   const div = document.getElementById("devices");
@@ -30,7 +29,7 @@ stompClient.connect({}, function () {
  });
 
  function confirmDevice(deviceId) {
-  fetch('/device/create/confirm', {
+  fetch('/user/device/create/confirm', {
     method: 'POST'
   }).then(() => {
   document.getElementById(deviceId).remove();

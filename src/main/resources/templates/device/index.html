@@ -12,7 +12,7 @@
 
 <h1>Thiết bị</h1>
 <button>
-    <a th:href="@{'/device/create'}"> Thêm thiết bị </a>
+    <a th:href="@{'/user/device/create'}"> Thêm thiết bị </a>
 </button>
 
 <br><br>
@@ -45,7 +45,7 @@
         </td>
 
         <td>
-            <a th:href="@{'/device/delete/' + ${device.idDevice}}"
+            <a th:href="@{'/user/device/delete/' + ${device.idDevice}}"
                onclick="return confirm('Bạn chắc chắn xóa?')">Xóa</a>
         </td>
     </tr>

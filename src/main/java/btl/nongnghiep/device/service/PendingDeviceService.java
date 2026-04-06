@@ -10,15 +10,15 @@ import java.util.Map;
 public class PendingDeviceService {
     private Map<String, CreateDeviceDto> pendingDevices = new HashMap<>();
 
-    public void save(String idUser,CreateDeviceDto device) {
-        this.pendingDevices.put(idUser,device);
+    public void save(String username,CreateDeviceDto device) {
+        this.pendingDevices.put(username,device);
     }
 
-    public CreateDeviceDto get(String idUser) {
-        return this.pendingDevices.get(idUser);
+    public CreateDeviceDto get(String username) {
+        return this.pendingDevices.get(username);
     }
 
-    public void clear(String idUser) {
-        this.pendingDevices.remove(idUser);
+    public void clear(String username) {
+        this.pendingDevices.remove(username);
     }
 }

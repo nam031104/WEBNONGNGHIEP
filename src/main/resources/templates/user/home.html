@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Home</title>
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+</head>
+<body>
+<main class="auth-shell">
+    <section class="auth-card wide">
+        <p class="eyebrow">Khu Vuc User</p>
+        <h1>Xin chao, <span th:text="${username}">user</span></h1>
+        <p class="subtitle">Day la trang mac dinh sau khi tai khoan USER dang nhap thanh cong.</p>
+
+        <div class="alert success">
+            Quyen hien tai:
+            <span th:text="${authorities}"></span>
+        </div>
+
+        <div class="hero-actions single">
+            <a class="action-link secondary" th:href="@{/user}">Ve trang chu</a>
+        </div>
+        <div class="hero-actions single">
+            <a class="action-link secondary" th:href="@{/user/device}">Quan ly thiet bi</a>
+        </div>
+        <div class="hero-actions single">
+            <a class="action-link secondary" th:href="@{/user/data}">Theo doi cam bien</a>
+        </div>
+
+        <form th:action="@{/logout}" method="post" class="auth-form">
+            <button type="submit">Dang xuat</button>
+        </form>
+    </section>
+</main>
+</body>
+</html>
