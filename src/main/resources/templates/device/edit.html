@@ -1,24 +1,47 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>DHn</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Sửa thiết bị</title>
+    <meta charset="UTF-8" />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/fragment/userLayout.css">
+    <link rel="stylesheet" href="/css/device/updateDevice.css">
 </head>
+
 <body>
+
 <div th:replace="fragment/userLayout :: header"></div>
 
+<div class="main-content">
+    <div class="form-container">
 
-<form th:action="@{/device/edit/{id}(id=${device.idDevice})}" method="post" th:object="${deviceDto}">
+        <div class="form-card">
+            <h2 class="form-title">Sửa thiết bị</h2>
 
-    <label>Name:</label>
-    <input type="text" th:field="*{name}" />
+            <form th:action="@{/user/device/update/{id}(id=${updateDeviceDto.idDevice})}"
+                  method="post"
+                  th:object="${updateDeviceDto}">
 
-    <label>TypeDevice:</label>
-    <input type="text" th:field="*{typeDevice}" />
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" th:field="*{name}" />
+                </div>
 
-    <button type="submit">Sửa</button>
-</form>
+                <div class="form-group">
+                    <label>Type Device</label>
+                    <input type="text" th:field="*{typeDevice}" />
+                </div>
+
+                <button type="submit" class="btn-submit">Sửa</button>
+            </form>
+        </div>
+
+    </div>
+</div>
+
 
 <div th:replace="fragment/userLayout :: footer"></div>
+
 </body>
 </html>

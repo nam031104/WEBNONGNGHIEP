@@ -2,21 +2,28 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Layout</title>
+    <link rel="stylesheet" href="/css/fragment/userLayout.css">
 </head>
+
 <body>
-<!-- Header -->
-<header th:fragment="header">
-    <h1>My Website</h1>
-    <nav>
-        <a th:href="@{/user/device}">Quan li thiet bi</a>
-        <a th:href="@{/user/data}">Xem du lieu </a>
-    </nav>
+
+<!-- HEADER -->
+<header th:fragment="header" class="header">
+    <div class="nav-container">
+        <h1 class="logo">🌱 IoT Farm</h1>
+
+        <nav class="nav-menu">
+            <a th:href="@{/user/device}">Thiết bị</a>
+            <a th:href="@{/user/data}">Dữ liệu</a>
+        </nav>
+    </div>
 </header>
 
-<!-- Footer -->
-<footer th:fragment="footer">
-    <p>© 2026 My Website</p>
+<!-- FOOTER -->
+<footer th:fragment="footer" class="footer">
+    <p>© 2026 IoT Farm System</p>
 </footer>
+
 </body>
 </html>

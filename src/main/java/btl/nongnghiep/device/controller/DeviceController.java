@@ -4,6 +4,7 @@ import btl.nongnghiep.account.entity.Account;
 import btl.nongnghiep.account.repository.AccountRepository;
 import btl.nongnghiep.device.dto.CreateDeviceDto;
 import btl.nongnghiep.device.dto.DeviceDto;
+import btl.nongnghiep.device.dto.UpdateDeviceDto;
 import btl.nongnghiep.device.service.DeviceService;
 import btl.nongnghiep.device.service.PendingDeviceService;
 import btl.nongnghiep.mqtt.Mqtt;
@@ -85,32 +86,32 @@ public class DeviceController {
         }
     }
 
-//
-//    @GetMapping("/edit/{id}")
-//    public String editDevice(Model model, @PathVariable("id") String id){
-//        try {
-//            DeviceDto deviceDto = deviceService.findDeviceById(id);
-//            model.addAttribute("devicedto",deviceDto);
-//            return "device/edit";
-//        } catch (RuntimeException e) {
-//            model.addAttribute("message", "Không tìm thấy thiết bị");
-//            return "device/error";
-//        }
-//    }
-//
-//    @PostMapping("/edit/{id}")
-//    public String updateDevice(Model model, @PathVariable("id") String id, @ModelAttribute("devicedto") DeviceDto deviceDto){
-//        try {
-//            deviceDto.setIdDevice(id);
-//            deviceService.updateDeviceById(deviceDto);
-//            return "redirect:/device";
-//        } catch (RuntimeException e){
-//            model.addAttribute("message", "Không tìm thấy thiết bị");
-//            return "device/error";
-//        }
-//
-//    }
-//
+
+    @GetMapping("/update/{id}")
+    public String editDevice(Model model, @PathVariable("id") String id){
+        try {
+            UpdateDeviceDto updateDeviceDto = deviceService.findDeviceById(id);
+            model.addAttribute("updateDeviceDto",updateDeviceDto);
+            return "device/edit";
+        } catch (RuntimeException e) {
+            model.addAttribute("message", "Không tìm thấy thiết bị");
+            return "device/error";
+        }
+    }
+
+    @PostMapping("/update/{id}")
+    public String updateDevice(Model model, @PathVariable("id") String id, @ModelAttribute("updateDeviceDto") UpdateDeviceDto updateDeviceDto){
+        try {
+            updateDeviceDto.setIdDevice(id);
+            deviceService.updateDeviceById(updateDeviceDto);
+            return "redirect:/user/device";
+        } catch (RuntimeException e){
+            model.addAttribute("message", "Không tìm thấy thiết bị");
+            return "device/error";
+        }
+
+    }
+
 
 //    }
 }

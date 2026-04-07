@@ -1,57 +1,77 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>DHn</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <style>
-        table, th, td { border: 1px solid black; border-collapse: collapse; padding: 8px;}
-    </style>
+    <title>Thiết bị</title>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="/css/device/device.css">
+    <link rel="stylesheet" href="/css/fragment/userLayout.css">
 </head>
+
 <body>
+
+<!-- GỌI HEADER -->
 <div th:replace="fragment/userLayout :: header"></div>
 
-<h1>Thiết bị</h1>
-<button>
-    <a th:href="@{'/user/device/create'}"> Thêm thiết bị </a>
-</button>
+<div class="main-content">
+    <div class="container">
+        <div class="page-header">
+            <h1>Danh sách thiết bị</h1>
+            <a class="btn-add" th:href="@{'/user/device/create'}">+ Thêm thiết bị</a>
+        </div>
 
-<br><br>
+        <div class="device-list">
+            <div class="device-card" th:each="device : ${deviceDtos}">
 
-<table>
-    <thead>
-    <tr>
-        <th>Name</th>
-        <th>Type Device</th>
-        <th>Sensors</th>
-        <th>Actors</th>
-        <th>Hành động</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="device : ${deviceDtos}">
-        <td th:text="${device.name}"></td>
-        <td th:text="${device.typeDevice}"></td>
+                <div class="device-header">
+                    <h2 th:text="${device.name}"></h2>
+                    <span class="device-type" th:text="${device.typeDevice}"></span>
+                </div>
 
-        <td>
-            <ul>
-                <li th:each="sensor : ${device.sensors}" th:text="${sensor.typeSensor}"></li>
-            </ul>
-        </td>
+                <div class="device-body">
 
-        <td>
-            <ul>
-                <li th:each="actor : ${device.actors}" th:text="${actor.typeActor}"></li>
-            </ul>
-        </td>
+                    <!-- Sensors -->
+                    <div class="section">
+                        <h4>🌡 Sensors</h4>
+                        <ul class="no-dot">
+                            <li th:each="sensor : ${device.sensors}"
+                                th:text="${sensor.typeSensor}">
+                            </li>
+                        </ul>
+                    </div>
 
-        <td>
-            <a th:href="@{'/user/device/delete/' + ${device.idDevice}}"
-               onclick="return confirm('Bạn chắc chắn xóa?')">Xóa</a>
-        </td>
-    </tr>
-    </tbody>
-</table>
+                    <!-- Actors -->
+                    <div class="section">
+                        <h4>⚙️ Actors</h4>
+                        <ul class="no-dot">
+                            <li th:each="actor : ${device.actors}"
+                                th:text="${actor.typeActor}">
+                            </li>
+                        </ul>
+                    </div>
 
+                </div>
+
+                <div class="device-footer">
+                    <a class="btn-update"
+                       th:href="@{'/user/device/update/' + ${device.idDevice}}">
+                        Sửa
+                    </a>
+
+                    <a class="btn-delete"
+                       th:href="@{'/user/device/delete/' + ${device.idDevice}}"
+                       onclick="return confirm('Bạn chắc chắn xóa?')">
+                        Xóa
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- GỌI FOOTER -->
 <div th:replace="fragment/userLayout :: footer"></div>
+
 </body>
 </html>

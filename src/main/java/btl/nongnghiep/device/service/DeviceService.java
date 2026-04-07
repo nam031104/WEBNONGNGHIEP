@@ -2,12 +2,15 @@ package btl.nongnghiep.device.service;
 
 import btl.nongnghiep.account.entity.Account;
 import btl.nongnghiep.account.repository.AccountRepository;
+import btl.nongnghiep.actor.entity.Actor;
 import btl.nongnghiep.device.dto.CreateDeviceDto;
 import btl.nongnghiep.device.dto.DeviceDto;
+import btl.nongnghiep.device.dto.UpdateDeviceDto;
 import btl.nongnghiep.device.entity.Device;
 import btl.nongnghiep.device.repository.DeviceRepository;
 
 
+import btl.nongnghiep.sensor.entity.Sensor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,7 +40,6 @@ public class DeviceService {
         return deviceSaved.toDto();
     }
 
-    @Transactional
     public List<DeviceDto> getDevicesByUsername(String username) {
         Account account = accountRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
@@ -51,6 +53,7 @@ public class DeviceService {
                 .toList();
     }
 
+    @Transactional
     public void deleteDevice(String id) {
         Optional<Device> optionalDevice = deviceRepository.findById(id);
         if (optionalDevice.isPresent()) {
@@ -61,9 +64,33 @@ public class DeviceService {
         }
     }
 
+    public UpdateDeviceDto findDeviceById(String idDevice){
+        Optional<Device> optionalDevice = deviceRepository.findById(idDevice);
+        if(optionalDevice.isPresent()) {
+            UpdateDeviceDto updateDeviceDto =new UpdateDeviceDto();
+            updateDeviceDto.setIdDevice(optionalDevice.get().getIdDevice());
+            updateDeviceDto.setTypeDevice(optionalDevice.get().getTypeDevice());
+            updateDeviceDto.setName(optionalDevice.get().getName());
+            return updateDeviceDto;
+        } else {
+            throw new RuntimeException("Device not found");
+        }
+    }
 
+    public void updateDeviceById(UpdateDeviceDto updateDeviceDto){
 
+        Optional<Device> optionalDevice = deviceRepository.findById(updateDeviceDto.getIdDevice());
+        if(optionalDevice.isPresent()) {
+            Device device = optionalDevice.get();
+            device.setTypeDevice(updateDeviceDto.getTypeDevice());
+            device.setName(updateDeviceDto.getName());
+            deviceRepository.save(device);
 
+        } else {
+            throw new RuntimeException("Device not found");
+        }
+
+    }
 //
 //    public DeviceDto updateDeviceById(DeviceDto deviceDto) {
 //        String id = deviceDto.getIdDevice();

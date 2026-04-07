@@ -3,22 +3,35 @@ const stompClient = Stomp.over(socket);
 
 stompClient.connect({}, function () {
     stompClient.subscribe('/user/topic/sensordata', function (message) {
+        const deviceData = JSON.parse(message.body);
+        console.log("DEVICE DATA:", deviceData);
 
-        const data = JSON.parse(message.body);
-        console.log("DATA:", data);
+        const container = document.getElementById("Sensors");
 
-        const div = document.getElementById("Sensors");
+        const deviceId = deviceData.idDevice;
+        const sensors = deviceData.dataWebsocketDtos;
 
-        let html = `<div id="sensor"><br>`;
-        html += `<h2>Du lieu dang day len</h2>`;
+        let deviceDiv = document.getElementById("device-" + deviceId);
 
-        data.forEach(s => {
-            console.log(s);
-            html += `- ${s.typeSensor} - ${s.value} - ${s.unit}<br/>`;
+        // tạo card nếu chưa có
+        if (!deviceDiv) {
+            deviceDiv = document.createElement("div");
+            deviceDiv.id = "device-" + deviceId;
+            deviceDiv.className = "device-block";
+            container.appendChild(deviceDiv);
+        }
+
+        let html = `<h3>Device: ${deviceId}</h3>`;
+        html += `<div class="sensor-list">`;
+
+        sensors.forEach(s => {
+            html += `<div class="sensor-item">
+                        ${s.typeSensor} (${s.idSensor}) : ${s.value} ${s.unit}
+                     </div>`;
         });
 
         html += `</div>`;
 
-        div.innerHTML = html;
+        deviceDiv.innerHTML = html;
     });
 });
