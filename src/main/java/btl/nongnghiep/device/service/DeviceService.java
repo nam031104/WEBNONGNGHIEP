@@ -10,6 +10,7 @@ import btl.nongnghiep.device.entity.Device;
 import btl.nongnghiep.device.repository.DeviceRepository;
 
 
+import btl.nongnghiep.exception.NotFoundException;
 import btl.nongnghiep.sensor.entity.Sensor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +33,7 @@ public class DeviceService {
     public CreateDeviceDto createDevice(CreateDeviceDto createDeviceDto,String username) {
         Device device = createDeviceDto.toEntity();
         Account account = accountRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Account not found"));
+                .orElseThrow(() -> new NotFoundException("Không tìm thấy tài khoản"));
 
         String idAccount = account.getIdAccount();
         device.setIdAccount(idAccount);
@@ -42,7 +43,7 @@ public class DeviceService {
 
     public List<DeviceDto> getDevicesByUsername(String username) {
         Account account = accountRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Account not found"));
+                .orElseThrow(() -> new NotFoundException("Không tìm thấy tài khoản"));
 
         String idAccount = account.getIdAccount();
         List<Device> devices = deviceRepository.findByUserIdWithActors(idAccount);
@@ -60,7 +61,7 @@ public class DeviceService {
             Device device = optionalDevice.get();
             deviceRepository.delete(device);
         } else {
-            throw new RuntimeException("Device not found");
+            throw new NotFoundException("Không tìm thấy thiết bị");
         }
     }
 
@@ -73,7 +74,7 @@ public class DeviceService {
             updateDeviceDto.setName(optionalDevice.get().getName());
             return updateDeviceDto;
         } else {
-            throw new RuntimeException("Device not found");
+            throw new NotFoundException("Không tìm thấy thiết bị");
         }
     }
 
@@ -87,7 +88,7 @@ public class DeviceService {
             deviceRepository.save(device);
 
         } else {
-            throw new RuntimeException("Device not found");
+            throw new NotFoundException("Không tìm thấy thiết bị");
         }
 
     }

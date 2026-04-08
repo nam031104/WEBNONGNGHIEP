@@ -77,39 +77,25 @@ public class DeviceController {
 
     @GetMapping("/delete/{id}")
     public String deleteDevice(Model model, @PathVariable("id") String id) {
-        try {
-            deviceService.deleteDevice(id);
-            return "redirect:/user/device";
-        } catch (RuntimeException e) {
-            model.addAttribute("messeage", "Không tìm thấy thiết bị");
-            return "device/error";
-        }
+        deviceService.deleteDevice(id);
+        return "redirect:/user/device";
+
     }
 
 
     @GetMapping("/update/{id}")
     public String editDevice(Model model, @PathVariable("id") String id){
-        try {
-            UpdateDeviceDto updateDeviceDto = deviceService.findDeviceById(id);
-            model.addAttribute("updateDeviceDto",updateDeviceDto);
-            return "device/edit";
-        } catch (RuntimeException e) {
-            model.addAttribute("message", "Không tìm thấy thiết bị");
-            return "device/error";
-        }
+        UpdateDeviceDto updateDeviceDto = deviceService.findDeviceById(id);
+        model.addAttribute("updateDeviceDto",updateDeviceDto);
+        return "device/edit";
+
     }
 
     @PostMapping("/update/{id}")
     public String updateDevice(Model model, @PathVariable("id") String id, @ModelAttribute("updateDeviceDto") UpdateDeviceDto updateDeviceDto){
-        try {
-            updateDeviceDto.setIdDevice(id);
-            deviceService.updateDeviceById(updateDeviceDto);
-            return "redirect:/user/device";
-        } catch (RuntimeException e){
-            model.addAttribute("message", "Không tìm thấy thiết bị");
-            return "device/error";
-        }
-
+        updateDeviceDto.setIdDevice(id);
+        deviceService.updateDeviceById(updateDeviceDto);
+        return "redirect:/user/device";
     }
 
 
