@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Agriculture IoT</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Modular CSS -->
+    <style>
+        select option {
+            background-color: #111c2d;
+            color: #fff;
+        }
+    </style>
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/components.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="ph-fill ph-plant"></i>
+                <h2>AgriSmart</h2>
+            </div>
+                <button class="nav-item active" data-target="control-view">
+                    <i class="ph ph-sliders"></i>
+                    <span>Device Control & Schedule</span>
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <img id="user-avatar" src="https://ui-avatars.com/api/?name=User&background=0D8ABC&color=fff" alt="User">
+                    <div class="user-info">
+                        <span class="user-name" id="user-name">---</span>
+                        <span class="user-role" id="user-role">---</span>
+                    </div>
+                </div>
+                <button onclick="logout()" title="Đăng xuất" style="background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.5);font-size:18px;margin-left:auto;padding:4px 8px;border-radius:8px;transition:color .2s;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">⏻</button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="topbar">
+                <div class="search-bar">
+                    <i class="ph ph-magnifying-glass"></i>
+                    <input type="text" placeholder="Search devices, users...">
+                </div>
+                <div class="topbar-actions">
+                    <button class="icon-btn notification-btn">
+                        <i class="ph ph-bell"></i>
+                        <span class="badge">3</span>
+                    </button>
+                    <button class="icon-btn">
+                        <i class="ph ph-gear"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                <!-- Part 2: Device Control & Scheduling -->
+                <section id="control-view" class="view-section active">
+                    <div class="section-header">
+                        <h2>Device Control & Schedule</h2>
+                        <p>Manage operating modes and manual overrides.</p>
+                    </div>
+
+                    <div class="device-selector glass" style="margin-bottom: 20px; padding: 15px 24px; display: flex; align-items: center; justify-content: space-between;">
+                        <div>
+                            <h3 style="margin-bottom: 5px;">Khu vực điều khiển</h3>
+                            <p style="color: rgba(255,255,255,0.6); font-size: 0.85rem;">Chọn Node thiết bị để xem và điều khiển</p>
+                        </div>
+                        <select id="node-select" style="padding: 10px 16px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; color: white; min-width: 250px; outline: none;">
+                            <option value="">-- Đang tải Node... --</option>
+                        </select>
+                    </div>
+
+                    <!-- Rendered dynamically by devices.js -->
+                    <div id="devices-control-grid" class="devices-control-grid"></div>
+
+                    <div class="schedule-section glass">
+                        <div class="schedule-header">
+                            <h3>Device Scheduling</h3>
+                            <button class="btn btn-primary" id="add-schedule-btn"><i class="ph ph-plus"></i> Add Schedule</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Actor ID</th>
+                                        <th>Loại</th>
+                                        <th>Th&#7901;i gian</th>
+                                        <th>Ghi ch&#250;</th>
+                                        <th>Tr&#7841;ng th&#225;i</th>
+                                        <th>Thao t&#225;c</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="schedule-tbody">
+                                    <!-- Populated via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+
+    <!-- Schedule Modal -->
+    <div id="schedule-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;align-items:center;justify-content:center;">
+        <div style="background:#111c2d;border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:32px;width:420px;max-width:95vw;box-shadow:0 24px 48px rgba(0,0,0,.5);">
+            <h3 id="modal-title" style="color:#fff;margin-bottom:20px;font-size:1.1rem;">&#x1F4C5; Thêm Lịch Mới</h3>
+            <label style="color:rgba(255,255,255,.7);font-size:.82rem;display:block;margin-bottom:6px;">Thiết bị</label>
+            <select id="modal-device-select" style="width:100%;padding:10px 14px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#fff;margin-bottom:14px;font-size:.9rem;">
+                <option value="">-- Chọn thiết bị --</option>
+            </select>
+            <label style="color:rgba(255,255,255,.7);font-size:.82rem;display:block;margin-bottom:6px;">Chọn Actor (Động cơ)</label>
+            <select id="modal-actor-select" style="width:100%;padding:10px 14px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#fff;margin-bottom:14px;font-size:.9rem;">
+                <option value="">-- Chọn Actor --</option>
+            </select>
+
+            <label style="color:rgba(255,255,255,.7);font-size:.82rem;display:block;margin-bottom:6px;">Lệnh Điều Khiển</label>
+            <div style="display:flex;gap:10px;margin-bottom:14px;">
+                <select id="modal-mode" style="flex:1;padding:8px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#fff;font-size:.85rem;" onchange="document.getElementById('modal-status').disabled = (this.value === '1'); if(this.value === '1') document.getElementById('modal-status').value = '';">
+                    <option value="">-- Chế độ --</option>
+                    <option value="1">AUTO</option>
+                    <option value="0">MANUAL</option>
+                </select>
+                <select id="modal-status" style="flex:1;padding:8px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#fff;font-size:.85rem;">
+                    <option value="">-- Trạng thái --</option>
+                    <option value="1">BẬT (ON)</option>
+                    <option value="0">TẮT (OFF)</option>
+                </select>
+            </div>
+            <label style="color:rgba(255,255,255,.7);font-size:.82rem;display:block;margin-bottom:6px;">Thời gian thực hiện</label>
+            <input type="datetime-local" id="modal-datetime" style="width:100%;padding:10px 14px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#fff;margin-bottom:14px;font-size:.9rem;color-scheme:dark;">
+            <label style="color:rgba(255,255,255,.7);font-size:.82rem;display:block;margin-bottom:6px;">Ghi chú</label>
+            <input type="text" id="modal-note" placeholder="Ghi chú..." style="width:100%;padding:10px 14px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#fff;margin-bottom:20px;font-size:.9rem;">
+            
+            <div style="display:flex;gap:10px;justify-content:flex-end;">
+                <button onclick="closeScheduleModal()" style="padding:10px 20px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#fff;cursor:pointer;font-size:.9rem;">Hủy</button>
+                <button onclick="submitSchedule()" style="padding:10px 20px;background:linear-gradient(135deg,#22c55e,#16a34a);border:none;border-radius:10px;color:#fff;cursor:pointer;font-size:.9rem;font-weight:600;">&#x2714; Lưu lịch</button>
+            </div>
+        </div>
+    </div>
+    <!-- Modular JS -->
+    <script src="/js/api.js?v=2"></script>
+    <script src="/js/navigation.js?v=2"></script>
+    <script src="/js/devices.js?v=2"></script>
+    <script src="/js/app.js?v=3"></script>
+    <script>
+        // Set fake user info since auth is removed
+        document.getElementById('user-name').textContent = "Tester";
+        document.getElementById('user-role').textContent = "Developer";
+    </script>
+</body>
+</html>

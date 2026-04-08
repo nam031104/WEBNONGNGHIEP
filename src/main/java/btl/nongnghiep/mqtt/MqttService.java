@@ -6,6 +6,9 @@ import btl.nongnghiep.sensor.dto.SensorDto;
 import btl.nongnghiep.sensordata.dto.ReceiveDataDto;
 import btl.nongnghiep.sensordata.service.SensorDataService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import btl.nongnghiep.actor.entity.Actor;
+import btl.nongnghiep.actor.repository.ActorRepository;
+import btl.nongnghiep.actor.dto.StatusActorDto;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -16,15 +19,21 @@ public class MqttService {
     private final PendingDeviceService pendingDeviceService;
     private final SimpMessagingTemplate messagingTemplate;
     private final SensorDataService sensorDataService;
+    private final ActorRepository actorRepository;
+    private final Mqtt mqttClient; // for publishing
 
     public MqttService(ObjectMapper objectMapper,
                        PendingDeviceService pendingDeviceService,
                        SimpMessagingTemplate messagingTemplate,
-                       SensorDataService sensorDataService) {
+                       SensorDataService sensorDataService,
+                       ActorRepository actorRepository,
+                       @org.springframework.context.annotation.Lazy Mqtt mqttClient) {
         this.objectMapper = objectMapper;
         this.pendingDeviceService = pendingDeviceService;
         this.messagingTemplate = messagingTemplate;
         this.sensorDataService = sensorDataService;
+        this.actorRepository = actorRepository;
+        this.mqttClient = mqttClient;
     }
 
     public void Mqtthandle(String topic, String message){
@@ -64,6 +73,18 @@ public class MqttService {
             try {
                 ReceiveDataDto receiveDataDto = objectMapper.readValue(message, ReceiveDataDto.class);
                 sensorDataService.handleData(username,receiveDataDto);
+                
+                // Update actors state based on MQTT message
+                if (receiveDataDto.getActors() != null) {
+                    for (StatusActorDto aDto : receiveDataDto.getActors()) {
+                        actorRepository.findById(aDto.getIdActor()).ifPresent(actor -> {
+                            actor.setMode(aDto.getMode());
+                            actor.setStatus(aDto.getStatus());
+                            actorRepository.save(actor);
+                        });
+                    }
+                }
+                
                 System.out.println("RAW JSON: " + message);
                 System.out.println("DTO: " + receiveDataDto.getDatas());
             } catch (Exception e) {
@@ -71,6 +92,25 @@ public class MqttService {
             }
         } else {
             System.out.println("Topic không hợp lệ: " + topic);
+        }
+    }
+
+    public void publishControlCommand(String username, String deviceId, String actorId, Integer mode, Integer status) {
+        try {
+            java.util.Map<String, Object> payload = new java.util.LinkedHashMap<>();
+            payload.put("idDevice", deviceId);
+            payload.put("idActor", actorId);
+            payload.put("mode", mode);
+            if (status != null) {
+                payload.put("status", status);
+            }
+
+            String json = objectMapper.writeValueAsString(payload);
+            String topic = "agriculture/device/control/" + deviceId;
+            mqttClient.MqttPub(topic, json, 1);
+            System.out.println("===> [MQTT PUBLISH THÀNH CÔNG] Topic: " + topic + " | Payload: " + json);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

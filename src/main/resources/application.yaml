@@ -21,4 +21,4 @@ spring:
 
 
 mqtt:
-  uri: tcp://localhost:1883
+  uri: tcp://broker.hivemq.com:1883
