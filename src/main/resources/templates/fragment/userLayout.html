@@ -17,6 +17,12 @@
             <a th:href="@{/user/device}">Quản lý Thiết bị</a>
             <a th:href="@{/user/control}">Điều khiển và Lập lịch</a>
             <a th:href="@{/user/data}">Dữ liệu Cảm biến</a>
+            <a th:href="@{/user/sensor/chart/day}">Báo cáo</a>
+            <a th:href="@{/user/notification}">Thông báo</a>
+            <a th:href="@{/user/membership}">Hội viên</a>
+            <form th:action="@{/logout}" method="post" class="auth-form">
+                <button type="submit" class="logout-button" onclick="return confirm('Bạn chắc chắn muốn đăng xuất?')">Đăng xuất</button>
+            </form>
         </nav>
     </div>
 </header>

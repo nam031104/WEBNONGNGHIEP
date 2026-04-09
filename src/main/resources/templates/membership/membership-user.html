@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Thành Viên Thân Thiết — Nông Nghiệp IoT</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f7f4; color: #1a2e1a; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+
+        .card { background: white; width: 100%; max-width: 450px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 30px; border-top: 10px solid #2d7a3a; text-align: center; transition: 0.3s; }
+        .rank-Vàng { border-top-color: #ffd700; }
+        .rank-Bạc { border-top-color: #c0c2c6; }
+
+        .user-id { font-size: 13px; color: #888; margin-bottom: 5px; }
+        .welcome { font-size: 18px; margin-bottom: 20px; }
+        .rank-name { font-size: 32px; font-weight: 800; color: #2d7a3a; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .balance { font-size: 36px; font-weight: bold; color: #333; margin-bottom: 20px; }
+
+        /* Progress Bar */
+        .progress-container { background: #eee; height: 10px; border-radius: 5px; margin: 20px 0; overflow: hidden; position: relative; }
+        .progress-bar { background: #2d7a3a; height: 100%; width: 0%; transition: width 1.5s ease-in-out; }
+        .progress-text { font-size: 12px; color: #666; margin-bottom: 25px; }
+
+        /* Form nạp tiền */
+        .topup-group { display: flex; flex-direction: column; gap: 12px; border-top: 1px solid #eee; padding-top: 25px; }
+        .topup-group input { padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; outline: none; font-size: 16px; text-align: center; }
+        .topup-group input:focus { border-color: #2d7a3a; }
+
+        .btn-nap { background: #2d7a3a; color: white; border: none; padding: 14px; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.2s; }
+        .btn-nap:hover { background: #235f2c; transform: translateY(-2px); }
+        .btn-nap:active { transform: translateY(0); }
+
+        .privileges { text-align: left; background: #f9fdf9; padding: 15px; border-radius: 10px; margin-top: 20px; border: 1px dashed #2d7a3a; }
+        .privileges ul { list-style: none; font-size: 13px; }
+        .privileges li { margin-bottom: 5px; }
+    </style>
+</head>
+<body th:classappend="'rank-' + ${membership.rankName}">
+
+<div class="card" th:classappend="'rank-' + ${membership.rankName}">
+    <div class="user-id" th:text="'Account ID: ' + ${idAccount}">ACC_01</div>
+    <div class="welcome">Chào mừng, <strong th:text="${membership.username}">Người dùng</strong>!</div>
+
+    <div class="rank-name">
+        <span th:text="${membership.rankName == 'Vàng' ? '🥇' : (membership.rankName == 'Bạc' ? '🥈' : '🥉')}">🥉</span>
+        <span th:text="${membership.rankName}">Đồng</span>
+    </div>
+
+    <div class="balance" th:text="${#numbers.formatDecimal(membership.balance, 0, 'COMMA', 0, 'POINT') + ' ₫'}">0 ₫</div>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="myBar" th:attr="data-balance=${membership.balance}"></div>
+    </div>
+    <div class="progress-text" id="progressStatus">Đang tính toán tiến trình...</div>
+
+    <div class="privileges">
+        <strong>Đặc quyền của bạn:</strong>
+        <ul>
+            <li th:text="${membership.canControlDevice == 1 ? '✅ Quyền điều khiển thiết bị: Có' : '❌ Quyền điều khiển thiết bị: Chưa có'}"></li>
+            <li th:if="${membership.rankName == 'Vàng'}">🌟 Ưu tiên xử lý dữ liệu cảm biến</li>
+            <li th:if="${membership.rankName == 'Bạc' or membership.rankName == 'Vàng'}">📱 Nhận thông báo cảnh báo nâng cao</li>
+        </ul>
+    </div>
+
+    <div class="topup-group">
+        <input type="number" id="topupAmount" placeholder="Nhập số tiền muốn nạp (₫)..." min="1000"/>
+        <button class="btn-nap" onclick="handleTopUp()">Nạp tiền ngay 🚀</button>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    // 1. Xử lý thanh tiến trình khi trang load xong
+    window.onload = function() {
+        const balance = parseFloat(document.getElementById('myBar').getAttribute('data-balance')) || 0;
+        const bar = document.getElementById('myBar');
+        const status = document.getElementById('progressStatus');
+
+        let target = 500000; // Mốc lên Bạc
+        let nextRank = "Bạc";
+
+        if (balance >= 500000 && balance < 2000000) {
+            target = 2000000; // Mốc lên Vàng
+            nextRank = "Vàng";
+        } else if (balance >= 2000000) {
+            target = balance;
+            nextRank = "Tối đa";
+        }
+
+        let percent = (balance / target) * 100;
+        if (percent > 100) percent = 100;
+
+        setTimeout(() => {
+            bar.style.width = percent + "%";
+            if (nextRank === "Tối đa") {
+                status.innerText = "🏆 Bạn đã đạt hạng cao nhất!";
+            } else {
+                let remain = target - balance;
+                status.innerText = "Còn " + remain.toLocaleString() + " ₫ nữa để lên hạng " + nextRank;
+            }
+        }, 300);
+    };
+
+    // 2. Hàm xử lý nạp tiền AJAX
+    function handleTopUp() {
+        const amount = document.getElementById('topupAmount').value;
+        // Lấy idAccount từ biến Thymeleaf một cách an toàn
+        const idAcc = [[${idAccount}]];
+
+        if (!amount || amount <= 0) {
+            alert("Vui lòng nhập số tiền hợp lệ!");
+            return;
+        }
+
+        // Tạo form data để gửi giống như form truyền thống
+        const formData = new URLSearchParams();
+        formData.append('idAccount', idAcc);
+        formData.append('amount', amount);
+
+        fetch('/user/membership/api/topup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                alert("✅ Nạp tiền thành công! Hệ thống đang cập nhật hạng...");
+                location.reload(); // Reload để thấy số dư và rank mới
+            } else {
+                return response.text().then(text => { throw new Error(text) });
+            }
+        })
+        .catch(error => {
+            alert("❌ Lỗi: " + error.message);
+            console.error(error);
+        });
+    }
+</script>
+
+</body>
+</html>

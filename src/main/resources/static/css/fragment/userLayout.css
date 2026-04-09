@@ -54,3 +54,27 @@ body {
     text-align: center;
     padding: 12px;
 }
+
+/* Logout button inline giống a */
+.logout-button {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    text-decoration: none;
+    margin-left: 20px;
+    font: inherit;
+    padding: 0;
+
+    display: inline;       /* quan trọng: giống thẻ a */
+    line-height: normal;   /* đảm bảo chữ không bị xuống dòng */
+}
+.logout-button:hover {
+    color: #1abc9c;
+}
+/* form chứa button inline */
+.auth-form {
+    display: inline; /* hoặc inline-block */
+    margin: 0;
+    padding: 0;
+}
