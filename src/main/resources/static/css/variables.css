@@ -1,3 +1,4 @@
+/* variables.css */
 :root {
     --bg-main: #0f172a;
     --bg-sidebar: #1e293b;
@@ -12,13 +13,10 @@
     --accent-green: #10b981;
     --accent-yellow: #eab308;
     --accent-red: #ef4444;
-    --accent-orange: #f97316;
-    --accent-cyan: #06b6d4;
     
     --radius-sm: 8px;
     --radius-md: 16px;
-    --radius-lg: 24px;
     
     --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition: all 0.3s ease;
 }

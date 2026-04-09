@@ -2,11 +2,16 @@ package btl.nongnghiep.actor.service;
 
 import btl.nongnghiep.device.entity.Device;
 import btl.nongnghiep.device.repository.DeviceRepository;
+import btl.nongnghiep.actor.dto.ActorDto;
 import btl.nongnghiep.actor.dto.ControlCommandDto;
 import btl.nongnghiep.actor.dto.DeviceStatusDto;
 import btl.nongnghiep.actor.entity.Actor;
 import btl.nongnghiep.actor.repository.ActorRepository;
+import btl.nongnghiep.account.entity.Account;
+import btl.nongnghiep.account.repository.AccountRepository;
 import btl.nongnghiep.mqtt.MqttService;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,18 +22,23 @@ public class ControlService {
     private final DeviceRepository deviceRepository;
     private final ActorRepository actorRepository;
     private final MqttService mqttService;
+    private final AccountRepository accountRepository;
 
-    public ControlService(DeviceRepository deviceRepository, ActorRepository actorRepository, MqttService mqttService) {
+    public ControlService(DeviceRepository deviceRepository, ActorRepository actorRepository, MqttService mqttService, AccountRepository accountRepository) {
         this.deviceRepository = deviceRepository;
         this.actorRepository = actorRepository;
         this.mqttService = mqttService;
+        this.accountRepository = accountRepository;
     }
 
     public DeviceStatusDto getDeviceStatus(String deviceId, String username) {
         Device device = deviceRepository.findById(deviceId)
                 .orElseThrow(() -> new RuntimeException("Thiết bị không tồn tại: " + deviceId));
 
-        if (!device.getIdAccount().equals(username)) {
+        Account account = accountRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy tài khoản: " + username));
+
+        if (!device.getIdAccount().equals(account.getIdAccount())) {
             throw new RuntimeException("Bạn không có quyền truy cập thiết bị này!");
         }
 
@@ -36,10 +46,17 @@ public class ControlService {
         dto.setIdDevice(device.getIdDevice());
         dto.setName(device.getName());
 
-        // Lấy danh sách các Actor bằng Mapping OneToMany
-        java.util.List<Actor> actors = device.getActors();
-        // Cần copy để tránh lazy loading issues nếucần, nhưng vì trả về JSON nên Jackson sẽ lo.
-        dto.setActors(actors);
+        // Chuyển đổi từ Entity sang DTO để tránh lỗi vòng lặp JSON (Circular Reference)
+        List<ActorDto> actorDtos = device.getActors().stream().map(actor -> {
+            ActorDto aDto = new ActorDto();
+            aDto.setIdActor(actor.getIdActor());
+            aDto.setTypeActor(actor.getTypeActor());
+            aDto.setMode(actor.getMode());
+            aDto.setStatus(actor.getStatus());
+            return aDto;
+        }).collect(Collectors.toList());
+
+        dto.setActors(actorDtos);
 
         return dto;
     }
@@ -48,7 +65,10 @@ public class ControlService {
         Device device = deviceRepository.findById(cmd.getIdDevice())
                 .orElseThrow(() -> new RuntimeException("Thiết bị không tìm thấy: " + cmd.getIdDevice()));
         
-        if (!device.getIdAccount().equals(username)) {
+        Account account = accountRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy tài khoản: " + username));
+
+        if (!device.getIdAccount().equals(account.getIdAccount())) {
             throw new RuntimeException("Bạn không có quyền điều khiển thiết bị này!");
         }
                 

@@ -1,198 +1,188 @@
 document.addEventListener('DOMContentLoaded', () => {
-    if (typeof initNavigation === 'function') initNavigation();
-    if (typeof initDevices === 'function') initDevices();
+    initNavigation();
+    initDevices();
 
-    console.log("AgriSmart Frontend App Initialized (Control & Schedule Only)");
+    console.log("AgriSmart Ready (Control & Schedule)");
 
-    // Only Schedule loop
+    // Tự động tải lịch mỗi 5 giây
     setInterval(() => {
-        if (typeof loadSchedules === 'function' && document.getElementById('schedule-modal').style.display !== 'flex') {
+        if (document.getElementById('schedule-modal').style.display !== 'flex') {
             loadSchedules();
         }
-    }, 3000);
+    }, 5000);
 
-    let currentEditScheduleId = null;
-    let allSchedulesData = [];
+    let currentEditId = null;
+    let allSchedules = [];
 
-    // ── Schedule Table & Modal (Part 2) ────────────────────
     async function loadSchedules() {
         try {
-            const schedules = await fetchSchedules();
-            allSchedulesData = schedules;
-            
-            let deviceMap = {};
-            try {
-                const devs = await fetchDevices();
-                devs.forEach(d => deviceMap[d.idDevice] = d.name || d.typeDevice);
-            } catch(e) {}
-
+            allSchedules = await fetchSchedules();
             const tbody = document.getElementById('schedule-tbody');
             if (!tbody) return;
-            
-            const getCmdText = (val, name) => val === null ? '' : (val === 1 ? `<span style="color:#4ade80">${name} Bật</span>` : `<span style="color:#f87171">${name} Tắt</span>`);
 
-            tbody.innerHTML = schedules.length === 0
-                ? '<tr><td colspan="6" style="text-align:center;opacity:.5">Chưa có lịch nào</td></tr>'
-                : schedules.map(s => {
-                    const devName = deviceMap[s.idDevice] ? `${deviceMap[s.idDevice]} (ID: ${s.idDevice})` : (s.idDevice || 'Tất cả thiết bị');
-                    const actorName = s.idActor ? `<span style="color:#60a5fa">${s.idActor}</span>` : '-';
-                    const modeTxt = s.mode === 1 ? '<span style="color:#22c55e">AUTO</span>' : '<span style="color:#f59e0b">MANUAL</span>';
-                    const stTxt = s.status === 1 ? 'BẬT' : 'TẮT';
-                    const cmds = `${modeTxt} - ${stTxt}`;
-                    return `
+            tbody.innerHTML = allSchedules.length === 0
+                ? '<tr><td colspan="6" style="text-align:center; opacity:.5">Chưa có lịch hẹn nào</td></tr>'
+                : allSchedules.map(s => `
                     <tr>
-                        <td>${actorName}</td>
-                        <td>${cmds}</td>
-                        <td>${formatDate(s.date)}</td>
+                        <td>${s.idActor}</td>
+                        <td>${s.mode === 1 ? 'AUTO' : 'MANUAL'} (${s.status === 1 ? 'BẬT' : 'TẮT'})</td>
+                        <td>${new Date(s.date).toLocaleString('vi-VN')}</td>
                         <td>${s.note || '-'}</td>
-                        <td><span style="padding:4px 8px;border-radius:6px;font-size:.85rem;color:#fff;background:${s.isExecuted === 1 ? 'rgba(59,130,246,.8)' : 'rgba(156,163,175,.8)'}">${s.isExecuted === 1 ? 'Hoàn thành' : 'Chưa chạy'}</span></td>
+                        <td><span class="badge ${s.isExecuted ? 'blue' : 'gray'}">${s.isExecuted ? 'Xong' : 'Chờ'}</span></td>
                         <td>
-                            <button onclick="editScheduleById('${s.idSchedule}')"
-                                style="background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.4);color:#60a5fa;
-                                       padding:4px 10px;border-radius:6px;cursor:pointer;font-size:.75rem;margin-right:4px;">
-                                Sửa
-                            </button>
-                            <button onclick="deleteScheduleById('${s.idSchedule}')"
-                                style="background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);color:#fca5a5;
-                                       padding:4px 10px;border-radius:6px;cursor:pointer;font-size:.75rem">
-                                Xóa
-                            </button>
+                            <button onclick="editSchedule('${s.idSchedule}')" class="btn-action edit">Sửa</button>
+                            <button onclick="removeSchedule('${s.idSchedule}')" class="btn-action del">Xóa</button>
                         </td>
-                    </tr>`;
-                }).join('');
+                    </tr>
+                `).join('');
         } catch (err) {
-            console.warn('Could not load schedules:', err.message);
+            console.error('Lỗi tải lịch:', err);
         }
     }
     loadSchedules();
 
-    window.deleteScheduleById = async (id) => {
+    window.removeSchedule = async (id) => {
         if (!confirm('Xóa lịch này?')) return;
         try {
             await deleteSchedule(id);
             loadSchedules();
         } catch (err) {
-            alert('Lỗi xóa lịch: ' + err.message);
+            alert(err.message);
         }
     };
 
-    // ── Add Schedule Button → open modal ───────────────────
-    const addBtn = document.getElementById('add-schedule-btn');
-    if (addBtn) addBtn.addEventListener('click', () => openScheduleModal());
-
-    window.openScheduleModal = async function() {
-        currentEditScheduleId = null;
-        document.getElementById('modal-title').innerHTML = '&#x1F4C5; Thêm Lịch Mới';
-
-        // Populate device select
-        let deviceOptions = '<option value="">-- Chọn thiết bị --</option>';
-        try {
-            const devices = await fetchDevices();
-            deviceOptions += devices.map(d =>
-                `<option value="${d.idDevice}">${d.name || d.typeDevice} (ID: ${d.idDevice})</option>`
-            ).join('');
-        } catch {}
-
-        // Set min datetime to now
-        const now = new Date();
-        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-        const minDt = now.toISOString().slice(0, 16);
-
-        const modal = document.getElementById('schedule-modal');
-        document.getElementById('modal-device-select').innerHTML = deviceOptions;
-        document.getElementById('modal-device-select').value = '';
-        document.getElementById('modal-datetime').min = minDt;
+    window.openScheduleModal = async () => {
+        currentEditId = null;
+        document.getElementById('modal-title').innerText = 'Thêm Lịch Mới';
+        
+        // Clear inputs
         document.getElementById('modal-datetime').value = '';
         document.getElementById('modal-note').value = '';
-        
-        document.getElementById('modal-actor-select').innerHTML = '<option value="">-- Chọn thiết bị trước --</option>';
-
         document.getElementById('modal-mode').value = '';
         document.getElementById('modal-status').value = '';
+        document.getElementById('modal-status').disabled = false;
 
-        modal.style.display = 'flex';
-    };
-
-    window.editScheduleById = async function(id) {
-        const schedule = allSchedulesData.find(s => s.idSchedule === id);
-        if (!schedule) return;
-
-        currentEditScheduleId = id;
-        document.getElementById('modal-title').innerHTML = '&#x270E; Sửa Lịch (ID: ' + id.substring(0,6) + '...)';
-
-        // Populate device select
-        let deviceOptions = '<option value="">-- Chọn thiết bị --</option>';
+        // Load devices for dropdown
         try {
             const devices = await fetchDevices();
-            deviceOptions += devices.map(d =>
-                `<option value="${d.idDevice}">${d.name || d.typeDevice} (ID: ${d.idDevice})</option>`
-            ).join('');
-        } catch {}
-        document.getElementById('modal-device-select').innerHTML = deviceOptions;
-
-        document.getElementById('modal-device-select').value = schedule.idDevice || '';
-        document.getElementById('modal-datetime').value = schedule.date ? schedule.date.substring(0, 16) : '';
-        document.getElementById('modal-note').value = schedule.note || '';
-        
-        // Trick to load actors for this device
-        try {
-            const nodeStatus = await fetchDeviceStatus(schedule.idDevice || schedule.idActor);
-            if(nodeStatus && nodeStatus.actors) {
-                let actOpt = '<option value="">-- Chọn Actor --</option>';
-                nodeStatus.actors.forEach(actor => {
-                    actOpt += `<option value="${actor.idActor}">${actor.typeActor.toUpperCase()} - ${actor.idActor}</option>`;
-                });
-                document.getElementById('modal-actor-select').innerHTML = actOpt;
-            }
-        } catch(e) {}
-        
-        document.getElementById('modal-actor-select').value = schedule.idActor || '';
-        document.getElementById('modal-mode').value = schedule.mode === null ? '' : schedule.mode;
-        document.getElementById('modal-status').value = schedule.status === null ? '' : schedule.status;
+            const devSelect = document.getElementById('modal-device-select');
+            devSelect.innerHTML = '<option value="">-- Chọn thiết bị --</option>' + 
+                devices.map(d => `<option value="${d.idDevice}">${d.name}</option>`).join('');
+            
+            document.getElementById('modal-actor-select').innerHTML = '<option value="">-- Chọn Actor --</option>';
+            devSelect.onchange = async (e) => {
+                const status = await fetchDeviceStatus(e.target.value);
+                document.getElementById('modal-actor-select').innerHTML = '<option value="">-- Chọn Actor --</option>' + 
+                    status.actors.map(a => `<option value="${a.idActor}">${a.typeActor} (${a.idActor})</option>`).join('');
+            };
+        } catch (e) {}
 
         document.getElementById('schedule-modal').style.display = 'flex';
     };
 
-    window.closeScheduleModal = function() {
+    window.closeScheduleModal = () => {
         document.getElementById('schedule-modal').style.display = 'none';
     };
 
-    window.submitSchedule = async function() {
-        const deviceId = document.getElementById('modal-device-select').value;
-        const dateStr  = document.getElementById('modal-datetime').value;
-        const note     = document.getElementById('modal-note').value;
+    window.editSchedule = async (id) => {
+        const s = allSchedules.find(x => x.idSchedule === id);
+        if (!s) return;
+        currentEditId = id;
+        document.getElementById('modal-title').innerText = 'Sửa Lịch Hẹn';
         
-        const actorId  = document.getElementById('modal-actor-select').value;
-        const modeStr  = document.getElementById('modal-mode').value;
-        const statusStr= document.getElementById('modal-status').value;
+        // Fill base info
+        document.getElementById('modal-datetime').value = s.date.substring(0, 16);
+        document.getElementById('modal-note').value = s.note || '';
+        document.getElementById('modal-mode').value = s.mode;
+        document.getElementById('modal-status').value = s.status !== null ? s.status : '';
+        document.getElementById('modal-status').disabled = (s.mode === 1);
 
-        if (!actorId) { alert('Vui lòng chọn Actor!'); return; }
-        if (!dateStr) { alert('Vui lòng chọn thời gian!'); return; }
+        // Load devices and set selected
+        try {
+            const devices = await fetchDevices();
+            const devSelect = document.getElementById('modal-device-select');
+            
+            // Find which device this actor belongs to
+            // Note: This requires knowing the deviceId from the actor or searching all devices
+            // Since s (ScheduleDto) only has idActor, we have to find the device
+            let parentDeviceId = "";
+            for (const d of devices) {
+                const status = await fetchDeviceStatus(d.idDevice);
+                if (status.actors.some(a => a.idActor === s.idActor)) {
+                    parentDeviceId = d.idDevice;
+                    break;
+                }
+            }
 
-        const payload = { 
-            idActor: actorId, 
-            date: dateStr + ':00', 
-            note: note,
-            mode: modeStr === "" ? null : parseInt(modeStr),
-            status: statusStr === "" ? null : parseInt(statusStr)
+            devSelect.innerHTML = '<option value="">-- Chọn thiết bị --</option>' + 
+                devices.map(d => `<option value="${d.idDevice}" ${d.idDevice === parentDeviceId ? 'selected' : ''}>${d.name}</option>`).join('');
+            
+            const actorSelect = document.getElementById('modal-actor-select');
+            if (parentDeviceId) {
+                const status = await fetchDeviceStatus(parentDeviceId);
+                actorSelect.innerHTML = '<option value="">-- Chọn Actor --</option>' + 
+                    status.actors.map(a => `<option value="${a.idActor}" ${a.idActor === s.idActor ? 'selected' : ''}>${a.typeActor} (${a.idActor})</option>`).join('');
+            }
+            
+            devSelect.onchange = async (e) => {
+                const status = await fetchDeviceStatus(e.target.value);
+                document.getElementById('modal-actor-select').innerHTML = '<option value="">-- Chọn Actor --</option>' + 
+                    status.actors.map(a => `<option value="${a.idActor}">${a.typeActor} (${a.idActor})</option>`).join('');
+            };
+        } catch (e) {}
+
+        document.getElementById('schedule-modal').style.display = 'flex';
+    };
+
+    window.submitSchedule = async () => {
+        const actorId = document.getElementById('modal-actor-select').value;
+        const dateVal = document.getElementById('modal-datetime').value;
+        const modeVal = document.getElementById('modal-mode').value;
+        const statusVal = document.getElementById('modal-status').value;
+
+        if (!actorId || !dateVal || modeVal === "") {
+            alert("Vui lòng chọn Actor, Thời gian và Chế độ!");
+            return;
+        }
+
+        const mode = parseInt(modeVal);
+        let status = parseInt(statusVal);
+
+        if (mode === 0 && isNaN(status)) {
+            alert("Vui lòng chọn trạng thái (Bật/Tắt) cho chế độ MANUAL!");
+            return;
+        }
+
+        const payload = {
+            idActor: actorId,
+            date: dateVal + ':00',
+            mode: mode,
+            status: isNaN(status) ? null : status,
+            note: document.getElementById('modal-note').value
         };
 
         try {
-            if (currentEditScheduleId) {
-                await updateSchedule(currentEditScheduleId, payload);
-            } else {
-                await createSchedule(payload);
+            const url = currentEditId ? `/user/api/schedules/${currentEditId}` : '/user/api/schedules';
+            const method = currentEditId ? 'PUT' : 'POST';
+            
+            const res = await fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (!res.ok) {
+                const errorData = await res.json().catch(() => null);
+                const msg = errorData ? errorData.message : `Mã lỗi: ${res.status}`;
+                alert("Lỗi server: " + msg);
+                return;
             }
-            closeScheduleModal();
+            
+            document.getElementById('schedule-modal').style.display = 'none';
             loadSchedules();
         } catch (err) {
-            alert('Lỗi lưu lịch: ' + err.message);
+            console.error(err);
+            alert("Lỗi kết nối hoặc xử lý: " + err.message);
         }
     };
 });
-
-function formatDate(dateStr) {
-    if (!dateStr) return '-';
-    const d = new Date(dateStr);
-    return d.toLocaleString('vi-VN');
-}

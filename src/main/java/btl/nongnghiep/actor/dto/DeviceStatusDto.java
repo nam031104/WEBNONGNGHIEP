@@ -1,19 +1,18 @@
 package btl.nongnghiep.actor.dto;
 
-import btl.nongnghiep.actor.entity.Actor;
+import java.util.List;
 public class DeviceStatusDto {
     private String idDevice;
     private String name;
-    // Bá» mode cá»§a device
     // private String mode;
     
-    // LÆ°u cÃ¡c Ä‘á»‘i tÆ°á»£ng relay con
-    private java.util.List<Actor> actors;
+    // Lưu các đối tượng relay con (Dùng DTO để tránh vòng lặp JSON)
+    private List<ActorDto> actors;
 
     public DeviceStatusDto() {
     }
 
-    public DeviceStatusDto(String idDevice, String name, java.util.List<Actor> actors) {
+    public DeviceStatusDto(String idDevice, String name, List<ActorDto> actors) {
         this.idDevice = idDevice;
         this.name = name;
         this.actors = actors;
@@ -35,11 +34,11 @@ public class DeviceStatusDto {
         this.name = name;
     }
 
-    public java.util.List<Actor> getActors() {
+    public List<ActorDto> getActors() {
         return actors;
     }
 
-    public void setActors(java.util.List<Actor> actors) {
+    public void setActors(List<ActorDto> actors) {
         this.actors = actors;
     }
 

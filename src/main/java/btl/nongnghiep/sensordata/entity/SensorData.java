@@ -13,7 +13,15 @@ public class SensorData {
     private String idSensor;
     private float value;
     private String unit;
+    @jakarta.persistence.Column(name = "created_at")
     private String createdAt;
+
+    @jakarta.persistence.PrePersist
+    protected void onCreate() {
+        if (this.createdAt == null) {
+            this.createdAt = java.time.LocalDateTime.now().toString();
+        }
+    }
 
     public String getIdData() {
         return idData;

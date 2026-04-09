@@ -4,10 +4,13 @@ import btl.nongnghiep.actor.entity.Actor;
 import btl.nongnghiep.schedule.dto.ScheduleDto;
 import btl.nongnghiep.schedule.entity.Schedule;
 import btl.nongnghiep.actor.repository.ActorRepository;
+import btl.nongnghiep.account.entity.Account;
+import btl.nongnghiep.account.repository.AccountRepository;
 import btl.nongnghiep.schedule.repository.ScheduleRepository;
 import btl.nongnghiep.mqtt.MqttService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,6 +18,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class ScheduleService {
 
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ScheduleService.class);
@@ -22,11 +26,13 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final ActorRepository actorRepository;
     private final MqttService mqttService;
+    private final AccountRepository accountRepository;
 
-    public ScheduleService(ScheduleRepository scheduleRepository, ActorRepository actorRepository, MqttService mqttService) {
+    public ScheduleService(ScheduleRepository scheduleRepository, ActorRepository actorRepository, MqttService mqttService, AccountRepository accountRepository) {
         this.scheduleRepository = scheduleRepository;
         this.actorRepository = actorRepository;
         this.mqttService = mqttService;
+        this.accountRepository = accountRepository;
     }
 
     // === CRUD ===
@@ -35,21 +41,46 @@ public class ScheduleService {
     }
 
     public List<ScheduleDto> getSchedulesByUsername(String username) {
-        return scheduleRepository.findSchedulesByAccountId(username).stream()
+        Account account = accountRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy tài khoản: " + username));
+        
+        return scheduleRepository.findSchedulesByAccountId(account.getIdAccount()).stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
-    public List<ScheduleDto> getSchedulesByActor(String idActor) {
+    public List<ScheduleDto> getSchedulesByActor(String idActor, String username) {
+        // Kiểm tra xem Actor có thuộc về User hay không
+        Actor actor = actorRepository.findById(idActor)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy Actor"));
+        
+        Account account = accountRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy tài khoản: " + username));
+
+        if (actor.getDevice() == null || !actor.getDevice().getIdAccount().equals(account.getIdAccount())) {
+            throw new RuntimeException("Bạn không có quyền xem lịch của Actor này");
+        }
+        
         return scheduleRepository.findByIdActor(idActor).stream().map(this::toDto).collect(Collectors.toList());
     }
 
-    public ScheduleDto createSchedule(ScheduleDto dto) {
+    public ScheduleDto createSchedule(ScheduleDto dto, String username) {
+        // Kiểm tra quyền sở hữu Actor trước khi tạo lịch
+        Actor actor = actorRepository.findById(dto.getIdActor())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy Actor"));
+        
+        Account account = accountRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy tài khoản: " + username));
+
+        if (actor.getDevice() == null || !actor.getDevice().getIdAccount().equals(account.getIdAccount())) {
+            throw new RuntimeException("Bạn không có quyền tạo lịch cho Actor này");
+        }
+
         Schedule s = new Schedule();
         s.setIdActor(dto.getIdActor());
         s.setDate(dto.getDate());
         s.setMode(dto.getMode());
-        s.setStatus(dto.getStatus()); 
+        s.setStatus(dto.getStatus() != null ? dto.getStatus() : 0); 
         s.setIsExecuted(0); // 0 = Chưa chạy
         s.setNote(dto.getNote());
         
@@ -57,20 +88,45 @@ public class ScheduleService {
     }
 
     // Xóa
-    public void deleteSchedule(String id) {
+    public void deleteSchedule(String id, String username) {
+        Schedule s = scheduleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy lịch hẹn"));
+        
+        // Kiểm tra xem lịch này có thuộc về Actor của user không
+        Actor actor = actorRepository.findById(s.getIdActor())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy Actor liên quan"));
+        
+        Account account = accountRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy tài khoản: " + username));
+
+        if (actor.getDevice() == null || !actor.getDevice().getIdAccount().equals(account.getIdAccount())) {
+            throw new RuntimeException("Bạn không có quyền xóa lịch này");
+        }
+
         scheduleRepository.deleteById(id);
     }
 
     // Sửa
-    public ScheduleDto updateSchedule(String id, ScheduleDto dto) {
+    public ScheduleDto updateSchedule(String id, ScheduleDto dto, String username) {
         Schedule s = scheduleRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy lịch hẹn"));
+        
+        // Kiểm tra quyền sở hữu Actor (cả cũ và mới nếu đổi actor)
+        Actor actor = actorRepository.findById(s.getIdActor())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy Actor hiện tại"));
+        
+        Account account = accountRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy tài khoản: " + username));
+
+        if (actor.getDevice() == null || !actor.getDevice().getIdAccount().equals(account.getIdAccount())) {
+            throw new RuntimeException("Bạn không có quyền sửa lịch này");
+        }
+
         s.setIdActor(dto.getIdActor());
         s.setDate(dto.getDate());
         s.setNote(dto.getNote());
         s.setMode(dto.getMode());
-        s.setStatus(dto.getStatus());
+        s.setStatus(dto.getStatus() != null ? dto.getStatus() : 0);
         
-        // Reset biáº¿n Ä‘á»ƒ backend cÃ³ thá»ƒ cháº¡y láº¡i lá»‡nh vÃ o Ä‘Ãºng thá» i Ä‘iá»ƒm má»›i
         s.setIsExecuted(0); 
         
         return toDto(scheduleRepository.save(s));

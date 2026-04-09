@@ -23,11 +23,11 @@ public class MqttService {
     private final Mqtt mqttClient; // for publishing
 
     public MqttService(ObjectMapper objectMapper,
-                       PendingDeviceService pendingDeviceService,
-                       SimpMessagingTemplate messagingTemplate,
-                       SensorDataService sensorDataService,
-                       ActorRepository actorRepository,
-                       @org.springframework.context.annotation.Lazy Mqtt mqttClient) {
+            PendingDeviceService pendingDeviceService,
+            SimpMessagingTemplate messagingTemplate,
+            SensorDataService sensorDataService,
+            ActorRepository actorRepository,
+            @org.springframework.context.annotation.Lazy Mqtt mqttClient) {
         this.objectMapper = objectMapper;
         this.pendingDeviceService = pendingDeviceService;
         this.messagingTemplate = messagingTemplate;
@@ -36,7 +36,7 @@ public class MqttService {
         this.mqttClient = mqttClient;
     }
 
-    public void Mqtthandle(String topic, String message){
+    public void Mqtthandle(String topic, String message) {
         System.out.println(topic + ": " + message);
         String[] parts = topic.split("/");
 
@@ -56,15 +56,14 @@ public class MqttService {
                     }
                 }
 
-                pendingDeviceService.save(username ,deviceDto);
+                pendingDeviceService.save(username, deviceDto);
                 // khi nao co dang ki dang nhap thi dung cai duoi
-                messagingTemplate.convertAndSendToUser(username,"/topic/devices", deviceDto);
+                messagingTemplate.convertAndSendToUser(username, "/topic/devices", deviceDto);
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-
-        }  else if(parts.length == 4 && parts[3].equals("data")) {
+        } else if (parts.length == 4 && parts[3].equals("data")) {
             String username = parts[1];
             String idDevice = parts[2];
             System.out.println("Username: " + username);
@@ -72,8 +71,8 @@ public class MqttService {
 
             try {
                 ReceiveDataDto receiveDataDto = objectMapper.readValue(message, ReceiveDataDto.class);
-                sensorDataService.handleData(username,receiveDataDto);
-                
+                sensorDataService.handleData(username, receiveDataDto);
+
                 // Update actors state based on MQTT message
                 if (receiveDataDto.getActors() != null) {
                     for (StatusActorDto aDto : receiveDataDto.getActors()) {
@@ -84,11 +83,11 @@ public class MqttService {
                         });
                     }
                 }
-                
+
                 System.out.println("RAW JSON: " + message);
                 System.out.println("DTO: " + receiveDataDto.getDatas());
             } catch (Exception e) {
-            e.printStackTrace();
+                e.printStackTrace();
             }
         } else {
             System.out.println("Topic không hợp lệ: " + topic);
