@@ -10,24 +10,21 @@ public class SensorChartViewDto {
     private final String unit;
     private final String selectedPeriodLabel;
     private final List<SensorChartPointDto> points;
-    private final LatestAverageDto latestAverage;
     private final long totalRecords;
 
     public SensorChartViewDto(String sensorId,
-                              String chartTitle,
-                              String chartType,
-                              String unit,
-                              String selectedPeriodLabel,
-                              List<SensorChartPointDto> points,
-                              LatestAverageDto latestAverage,
-                              long totalRecords) {
+            String chartTitle,
+            String chartType,
+            String unit,
+            String selectedPeriodLabel,
+            List<SensorChartPointDto> points,
+            long totalRecords) {
         this.sensorId = sensorId;
         this.chartTitle = chartTitle;
         this.chartType = chartType;
         this.unit = unit;
         this.selectedPeriodLabel = selectedPeriodLabel;
         this.points = points;
-        this.latestAverage = latestAverage;
         this.totalRecords = totalRecords;
     }
 
@@ -53,10 +50,6 @@ public class SensorChartViewDto {
 
     public List<SensorChartPointDto> getPoints() {
         return points;
-    }
-
-    public LatestAverageDto getLatestAverage() {
-        return latestAverage;
     }
 
     public long getTotalRecords() {

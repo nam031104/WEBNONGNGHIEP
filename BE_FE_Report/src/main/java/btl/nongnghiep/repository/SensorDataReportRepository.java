@@ -11,9 +11,19 @@ import java.util.Optional;
 
 public interface SensorDataReportRepository extends JpaRepository<SensorDataReport, Long> {
 
+    @Query("""
+            select distinct sdr.idSensor
+            from SensorDataReport sdr
+            order by sdr.idSensor
+            """)
+    List<String> findAllSensorIds();
+
     Optional<SensorDataReport> findByIdSensorAndPeriodTypeAndPeriodTime(String idSensor,
                                                                         String periodType,
                                                                         LocalDateTime periodTime);
+
+    Optional<SensorDataReport> findFirstByIdSensorAndPeriodTypeOrderByPeriodTimeDesc(String idSensor,
+                                                                                      String periodType);
 
     @Query("""
             select sdr

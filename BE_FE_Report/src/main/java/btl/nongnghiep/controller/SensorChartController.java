@@ -1,7 +1,8 @@
 package btl.nongnghiep.controller;
 
 import btl.nongnghiep.dto.SensorChartViewDto;
-import btl.nongnghiep.repository.SensorDataRepository;
+import btl.nongnghiep.entity.SensorDataReport;
+import btl.nongnghiep.repository.SensorDataReportRepository;
 import btl.nongnghiep.service.SensorChartService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -18,13 +19,15 @@ import java.util.List;
 @RequestMapping("/sensor/chart")
 public class SensorChartController {
 
+    private static final String HOUR_PERIOD_TYPE = "HOUR";
+
     private final SensorChartService sensorChartService;
-    private final SensorDataRepository sensorDataRepository;
+    private final SensorDataReportRepository sensorDataReportRepository;
 
     public SensorChartController(SensorChartService sensorChartService,
-                                 SensorDataRepository sensorDataRepository) {
+                                 SensorDataReportRepository sensorDataReportRepository) {
         this.sensorChartService = sensorChartService;
-        this.sensorDataRepository = sensorDataRepository;
+        this.sensorDataReportRepository = sensorDataReportRepository;
     }
 
     // ===================== DAY =====================
@@ -35,14 +38,14 @@ public class SensorChartController {
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             Model model) {
 
-        List<String> sensorIds = sensorDataRepository.findAllSensorIds();
+        List<String> sensorIds = sensorDataReportRepository.findAllSensorIds();
         if (sensorIds.isEmpty()) {
             model.addAttribute("error", "Chưa có dữ liệu cảm biến nào trong hệ thống.");
             return "sensor/no-data";
         }
 
         String resolvedSensorId = resolveId(sensorId, sensorIds);
-        LocalDate selectedDate = (date != null) ? date : LocalDate.now();
+        LocalDate selectedDate = (date != null) ? date : resolveLatestDate(resolvedSensorId);
 
         SensorChartViewDto chartView =
                 sensorChartService.buildDailyChart(resolvedSensorId, selectedDate);
@@ -62,14 +65,14 @@ public class SensorChartController {
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             Model model) {
 
-        List<String> sensorIds = sensorDataRepository.findAllSensorIds();
+        List<String> sensorIds = sensorDataReportRepository.findAllSensorIds();
         if (sensorIds.isEmpty()) {
             model.addAttribute("error", "Chưa có dữ liệu cảm biến nào trong hệ thống.");
             return "sensor/no-data";
         }
 
         String resolvedSensorId = resolveId(sensorId, sensorIds);
-        LocalDate selectedDate = (date != null) ? date : LocalDate.now();
+        LocalDate selectedDate = (date != null) ? date : resolveLatestDate(resolvedSensorId);
 
         SensorChartViewDto chartView =
                 sensorChartService.buildWeeklyChart(resolvedSensorId, selectedDate);
@@ -88,7 +91,7 @@ public class SensorChartController {
             @RequestParam(required = false) String month,
             Model model) {
 
-        List<String> sensorIds = sensorDataRepository.findAllSensorIds();
+        List<String> sensorIds = sensorDataReportRepository.findAllSensorIds();
         if (sensorIds.isEmpty()) {
             model.addAttribute("error", "Chưa có dữ liệu cảm biến nào trong hệ thống.");
             return "sensor/no-data";
@@ -99,10 +102,10 @@ public class SensorChartController {
         YearMonth selectedMonth;
         try {
             selectedMonth = (month == null || month.isBlank())
-                    ? YearMonth.now()
+                    ? YearMonth.from(resolveLatestDate(resolvedSensorId))
                     : YearMonth.parse(month);
         } catch (Exception e) {
-            selectedMonth = YearMonth.now();
+            selectedMonth = YearMonth.from(resolveLatestDate(resolvedSensorId));
         }
 
         SensorChartViewDto chartView =
@@ -123,6 +126,14 @@ public class SensorChartController {
             return sensorId;
         }
         return sensorIds.get(0);
+    }
+
+    private LocalDate resolveLatestDate(String sensorId) {
+        return sensorDataReportRepository
+                .findFirstByIdSensorAndPeriodTypeOrderByPeriodTimeDesc(sensorId, HOUR_PERIOD_TYPE)
+                .map(SensorDataReport::getPeriodTime)
+                .map(java.time.LocalDateTime::toLocalDate)
+                .orElse(LocalDate.now());
     }
 
     private void bindCommonAttributes(Model model,
