@@ -1,0 +1,277 @@
+```html
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Thành Viên Thân Thiết — Nông Nghiệp IoT</title>
+
+    <!-- CSS layout chung -->
+    <link rel="stylesheet" href="/css/fragment/userLayout.css">
+
+    <style>
+        /* ❌ BỎ flex center ở body để không phá layout */
+        body {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+
+        /* giữ footer luôn dưới */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+        }
+
+        /* CARD */
+        .card {
+            background: white;
+            width: 100%;
+            max-width: 450px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            padding: 30px;
+            border-top: 8px solid #2c3e50;
+            text-align: center;
+        }
+
+        .rank-Vàng { border-top-color: #f1c40f; }
+        .rank-Bạc { border-top-color: #bdc3c7; }
+
+        .user-id {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        .welcome {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .rank-name {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .balance {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        /* PROGRESS */
+        .progress-container {
+            background: #ddd;
+            height: 10px;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: #1abc9c;
+            height: 100%;
+            width: 0%;
+            transition: width 1.5s ease;
+        }
+
+        .progress-text {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        /* PRIVILEGES */
+        .privileges {
+            text-align: left;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+        }
+
+        .privileges ul {
+            list-style: none;
+            font-size: 13px;
+        }
+
+        .privileges li {
+            margin-bottom: 5px;
+        }
+
+        /* TOPUP */
+        .topup-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+
+        .topup-group input {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .topup-group input:focus {
+            border-color: #1abc9c;
+            outline: none;
+        }
+
+        .btn-nap {
+            background: #1abc9c;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-nap:hover {
+            background: #16a085;
+        }
+    </style>
+</head>
+
+<body th:classappend="'rank-' + ${membership.rankName}">
+
+<!-- HEADER -->
+<div th:replace="~{fragment/userLayout :: header}"></div>
+
+<!-- MAIN -->
+<div class="main-content">
+    <div class="container">
+
+        <div class="card" th:classappend="'rank-' + ${membership.rankName}">
+
+            <div class="user-id" th:text="'Account ID: ' + ${idAccount}"></div>
+
+            <div class="welcome">
+                Chào mừng, <strong th:text="${membership.username}"></strong>!
+            </div>
+
+            <div class="rank-name">
+                <span th:text="${membership.rankName == 'Vàng' ? '🥇' : (membership.rankName == 'Bạc' ? '🥈' : '🥉')}"></span>
+                <span th:text="${membership.rankName}"></span>
+            </div>
+
+            <div class="balance"
+                 th:text="${#numbers.formatDecimal(membership.balance, 0, 'COMMA', 0, 'POINT') + ' ₫'}">
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-bar" id="myBar"
+                     th:attr="data-balance=${membership.balance}"></div>
+            </div>
+
+            <div class="progress-text" id="progressStatus"></div>
+
+            <div class="privileges">
+                <strong>Đặc quyền:</strong>
+                <ul>
+                    <li th:text="${membership.canControlDevice == 1 ? '✅ Điều khiển thiết bị' : '❌ Chưa có quyền'}"></li>
+                    <li th:if="${membership.rankName == 'Vàng'}">🌟 Ưu tiên xử lý dữ liệu</li>
+                    <li th:if="${membership.rankName == 'Bạc' or membership.rankName == 'Vàng'}">📱 Cảnh báo nâng cao</li>
+                </ul>
+            </div>
+
+            <div class="topup-group">
+                <input type="number" id="topupAmount" placeholder="Nhập số tiền..." min="1000"/>
+                <button class="btn-nap" onclick="handleTopUp()">Nạp tiền 🚀</button>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- FOOTER -->
+<div th:replace="~{fragment/userLayout :: footer}"></div>
+
+<!-- SCRIPT giữ nguyên -->
+<script th:inline="javascript">
+    window.onload = function() {
+        const balance = parseFloat(document.getElementById('myBar').getAttribute('data-balance')) || 0;
+        const bar = document.getElementById('myBar');
+        const status = document.getElementById('progressStatus');
+
+        let target = 500000;
+        let nextRank = "Bạc";
+
+        if (balance >= 500000 && balance < 2000000) {
+            target = 2000000;
+            nextRank = "Vàng";
+        } else if (balance >= 2000000) {
+            target = balance;
+            nextRank = "Tối đa";
+        }
+
+        let percent = (balance / target) * 100;
+        if (percent > 100) percent = 100;
+
+        setTimeout(() => {
+            bar.style.width = percent + "%";
+            status.innerText = nextRank === "Tối đa"
+                ? "🏆 Bạn đã đạt hạng cao nhất!"
+                : "Còn " + (target - balance).toLocaleString() + " ₫ để lên hạng " + nextRank;
+        }, 300);
+    };
+
+    function handleTopUp() {
+        const amount = document.getElementById('topupAmount').value;
+        const idAcc = [[${idAccount}]];
+
+        if (!amount || amount <= 0) {
+            alert("Vui lòng nhập số tiền hợp lệ!");
+            return;
+        }
+
+        const formData = new URLSearchParams();
+        formData.append('idAccount', idAcc);
+        formData.append('amount', amount);
+
+        fetch('/user/membership/api/topup', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: formData
+        })
+        .then(res => {
+            if (res.ok) {
+                alert("✅ Nạp tiền thành công!");
+                location.reload();
+            } else {
+                return res.text().then(t => { throw new Error(t) });
+            }
+        })
+        .catch(err => alert("❌ " + err.message));
+    }
+</script>
+
+</body>
+</html>
+```
+
+---
+
+## 🔥 Bạn vừa fix được:
+
+* ✅ Header + footer không bị lệch
+* ✅ Card nằm giữa nhưng không phá layout
+* ✅ UI đồng bộ toàn hệ thống
+* ✅ Responsive ổn hơn
+
+---
+
+Nếu bạn muốn next level:
+👉 mình có thể nâng cấp thành **thẻ membership kiểu “ATM card animation + gradient xịn”** nhìn rất pro luôn 😎

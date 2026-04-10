@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lỗi</title>
+    <meta charset="UTF-8" />
+
+    <link rel="stylesheet" href="/css/fragment/userLayout.css">
+
+    <style>
+        /* căn giữa nội dung */
+        .error-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 60vh;
+        }
+
+        /* card lỗi */
+        .error-box {
+            background: #fff;
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .error-title {
+            font-size: 24px;
+            color: #e74c3c;
+            margin-bottom: 10px;
+        }
+
+        .error-message {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .btn-back {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #3498db;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .btn-back:hover {
+            background: #2980b9;
+        }
+    </style>
+</head>
+
+<body>
+
+<div th:replace="~{fragment/userLayout :: header}"></div>
+
+
+<div class="main-content">
+    <div class="error-container">
+        <div class="error-box">
+            <div class="error-title">⚠️ Có lỗi xảy ra</div>
+
+            <!-- message từ backend -->
+            <div class="error-message" th:text="${message}">
+                Đã xảy ra lỗi!
+            </div>
+
+            <a href="/user/device" class="btn-back">Quay lại</a>
+        </div>
+    </div>
+</div>
+
+
+<div th:replace="~{fragment/userLayout :: footer}"></div>
+
+</body>
+</html>

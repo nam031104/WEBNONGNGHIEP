@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Home</title>
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+</head>
+<body>
+<main class="auth-shell">
+    <section class="auth-card wide">
+        <p class="eyebrow">Khu Vuc Admin</p>
+        <h1>Xin chao, <span th:text="${username}">admin</span></h1>
+        <p class="subtitle">Day la trang rieng danh cho ADMIN de sau nay tich hop cac chuc nang quan tri.</p>
+
+        <div class="alert success">
+            Quyen hien tai:
+            <span th:text="${authorities}"></span>
+        </div>
+
+        <div class="hero-actions single">
+            <a class="action-link secondary" th:href="@{/}">Ve trang chao</a>
+            <a class="action-link secondary" th:href="@{/admin/membership}">Chỉnh sửa hội viên</a>
+            <a class="action-link secondary" th:href="@{/admin/notification}">Thông báo cho hội viên</a>
+        </div>
+
+        <form th:action="@{/logout}" method="post" class="auth-form">
+            <button type="submit">Dang xuat</button>
+        </form>
+    </section>
+</main>
+</body>
+</html>

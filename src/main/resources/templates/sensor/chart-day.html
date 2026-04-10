@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle}">Sensor Daily Chart</title>
+    <link rel="stylesheet" th:href="@{/css/sensor-chart.css}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="page-shell">
+    <div class="hero">
+        <h1>Sensor Data Monitoring</h1>
+        <p th:text="'Daily chart for sensor ' + ${sensorId} + ' on ' + ${chartView.selectedPeriodLabel}"></p>
+
+        <div class="nav-links">
+            <a class="active" th:href="@{/user/sensor/chart/day(sensorId=${sensorId},date=${selectedDate})}">Day</a>
+            <a th:href="@{/user/sensor/chart/week(sensorId=${sensorId},date=${selectedDate})}">Week</a>
+            <a th:href="@{/user/sensor/chart/month(sensorId=${sensorId},month=${#temporals.format(selectedDate,'yyyy-MM')})}">Month</a>
+        </div>
+    </div>
+
+    <section class="panel">
+
+        <div class="stats">
+            <div class="stat-card">
+                <span>Total Hourly Reports</span>
+                <strong th:text="${chartView.totalRecords}">0</strong>
+            </div>
+        </div>
+
+        <form class="filter-form" th:action="@{/user/sensor/chart/day}" method="get">
+            <select name="sensorId">
+                <option th:each="id : ${sensorIds}" th:value="${id}" th:text="${id}" th:selected="${id == sensorId}"></option>
+            </select>
+
+            <input type="date" name="date" th:value="${selectedDate}">
+            <button type="submit">Load</button>
+        </form>
+
+        <div class="chart-wrapper">
+            <canvas id="sensorChart"></canvas>
+        </div>
+    </section>
+</div>
+
+<script th:src="@{/js/sensor-chart.js}"></script>
+<script th:inline="javascript">
+    const chartData = {
+        type: /*[[${chartView.chartType}]]*/ 'line',
+        labels: /*[[${labels}]]*/ [],
+        values: /*[[${values}]]*/ [],
+        unit: /*[[${chartView.unit} ?: '' ]]*/ '',
+        datasetLabel: "Average"
+    };
+
+    document.addEventListener("DOMContentLoaded", function () {
+        renderSensorChart("sensorChart", chartData);
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dang ky</title>
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+</head>
+<body>
+<main class="auth-shell">
+    <section class="auth-card wide">
+        <p class="eyebrow">IoT Nong Nghiep</p>
+        <h1>Tao tai khoan moi</h1>
+        <p class="subtitle">Dang ky tai khoan USER, mat khau duoc ma hoa bang BCrypt truoc khi luu database.</p>
+
+        <div class="alert error" th:if="${error}" th:text="${error}"></div>
+
+        <form th:action="@{/register}" method="post" th:object="${account}" class="auth-form grid">
+            <label for="username">Username</label>
+            <input id="username" th:field="*{username}" type="text" placeholder="username" required>
+
+            <label for="password">Password</label>
+            <input id="password" th:field="*{password}" type="password" placeholder="mat khau" required>
+
+            <label for="name">Ho va ten</label>
+            <input id="name" th:field="*{name}" type="text" placeholder="nguyen van a" required>
+
+            <label for="email">Email</label>
+            <input id="email" th:field="*{email}" type="email" placeholder="email@example.com" required>
+
+            <label for="numberPhone">So dien thoai</label>
+            <input id="numberPhone" th:field="*{numberPhone}" type="text" placeholder="0123456789">
+
+            <label for="location">Dia chi</label>
+            <input id="location" th:field="*{location}" type="text" placeholder="Ha Noi">
+
+            <button type="submit">Dang ky</button>
+        </form>
+
+        <p class="switch-link">
+            Da co tai khoan?
+            <a th:href="@{/login}">Quay ve dang nhap</a>
+        </p>
+    </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,81 @@
+/* QUAN TRỌNG: giúp footer luôn ở dưới */
+html, body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+
+    display: flex;
+    flex-direction: column;
+}
+
+/* phần nội dung chính sẽ đẩy footer xuống */
+.main-content {
+    flex: 1;
+}
+
+/* HEADER */
+.header {
+    background: #2c3e50;
+    color: white;
+    padding: 12px 0;
+}
+
+.nav-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    margin: 0;
+    color: white;
+}
+
+.nav-menu a {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+}
+
+.nav-menu a:hover {
+    color: #1abc9c;
+}
+
+/* FOOTER */
+.footer {
+    background: #2c3e50;
+    color: white;
+    text-align: center;
+    padding: 12px;
+}
+
+/* Logout button inline giống a */
+.logout-button {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    text-decoration: none;
+    margin-left: 20px;
+    font: inherit;
+    padding: 0;
+
+    display: inline;       /* quan trọng: giống thẻ a */
+    line-height: normal;   /* đảm bảo chữ không bị xuống dòng */
+}
+.logout-button:hover {
+    color: #1abc9c;
+}
+/* form chứa button inline */
+.auth-form {
+    display: inline; /* hoặc inline-block */
+    margin: 0;
+    padding: 0;
+}

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Layout</title>
+    <link rel="stylesheet" href="/css/fragment/userLayout.css">
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header th:fragment="header" class="header">
+    <div class="nav-container">
+        <h1 class="logo">🌱 IoT Farm</h1>
+
+        <nav class="nav-menu">
+            <a th:href="@{/admin/membership}">Quản lý Hội viên</a>
+            <a th:href="@{/admin/notification}">Quản lý thông báo</a>
+
+            <form th:action="@{/logout}" method="post" class="auth-form">
+                <button type="submit" class="logout-button" onclick="return confirm('Bạn chắc chắn muốn đăng xuất?')">Đăng xuất</button>
+            </form>
+        </nav>
+    </div>
+</header>
+
+<!-- FOOTER -->
+<footer th:fragment="footer" class="footer">
+    <p>© 2026 IoT Farm System</p>
+</footer>
+
+</body>
+</html>

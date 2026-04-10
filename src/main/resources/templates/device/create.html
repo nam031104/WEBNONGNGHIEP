@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Thiết bị chờ xác nhận</title>
+    <meta charset="UTF-8" />
+
+    <!-- CSS layout chung -->
+    <link rel="stylesheet" href="/css/fragment/userLayout.css">
+
+    <!-- CSS page riêng (nếu muốn style thêm) -->
+    <link rel="stylesheet" href="/css/device/createDevice.css">
+
+    <!-- WebSocket -->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div th:replace="fragment/userLayout :: header"></div>
+
+<div class="main-content">
+    <div class="container waiting-device-container">
+
+        <div class="page-header">
+            <h2 class="page-title">Thiết bị chờ xác nhận</h2>
+            <div class="username" th:text="'username: ' + ${username}"></div>
+        </div>
+
+        <!-- Danh sách thiết bị -->
+        <div id="devices" class="device-list">
+            <!-- WebSocket sẽ append dữ liệu vào đây -->
+        </div>
+
+    </div>
+</div>
+
+
+<!-- WebSocket script -->
+<script th:src="@{/js/createDevice.js}"></script>
+
+<!-- FOOTER -->
+<div th:replace="fragment/userLayout :: footer"></div>
+
+</body>
+</html>
