@@ -1,0 +1,84 @@
+.waiting-device-container {
+    margin: 20px auto;
+    max-width: 1200px;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.page-title {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.username {
+    font-size: 14px;
+    color: #555;
+}
+
+.device-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* container danh sách thiết bị */
+#devices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+/* card device */
+.device-card {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* tên thiết bị */
+.device-name {
+    font-size: 18px;
+    color: #2c3e50;
+}
+
+/* sensors */
+.device-sensors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.sensor-item {
+    background-color: #e1f5fe;
+    color: #0277bd;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+/* nút xác nhận */
+.btn-confirm {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.btn-confirm:hover {
+    background-color: #45a049;
+}

@@ -1,0 +1,34 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Cam bien</title>
+    <meta charset="UTF-8" />
+
+    <!-- WebSocket -->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/fragment/userLayout.css">
+    <link rel="stylesheet" href="/css/sensordata/sensorData.css">
+</head>
+<body>
+
+<!-- HEADER -->
+<div th:replace="fragment/userLayout :: header"></div>
+<div class="main-content">
+    <div class="container">
+        <h1>Dữ liệu từ cảm biến</h1>
+
+        <!-- Device container -->
+        <div id="Sensors" class="device-container"></div>
+    </div>
+</div>
+
+<!-- JS -->
+<script th:src="@{/js/sensorData.js}"></script>
+
+<!-- FOOTER -->
+<div th:replace="fragment/userLayout :: footer"></div>
+</body>
+</html>

@@ -1,0 +1,139 @@
+/* Reset nhẹ */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f7fa;
+    margin: 0;
+    padding: 0;
+}
+
+/* Container */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 20px auto;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* nút thêm */
+.btn-add {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 16px;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: 0.3s;
+}
+
+.btn-add:hover {
+    background-color: #45a049;
+}
+
+/* Grid layout */
+.device-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+/* Card */
+.device-card {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: 0.3s;
+}
+
+
+/* Header card */
+.device-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.device-type {
+    background: #e3f2fd;
+    color: #2196F3;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+/* Body */
+.device-body {
+    margin-top: 10px;
+}
+
+.section {
+    margin-top: 10px;
+}
+
+.section h4 {
+    margin-bottom: 5px;
+}
+
+.section ul {
+    padding-left: 18px;
+    margin: 0;
+}
+
+.section li {
+    font-size: 14px;
+    margin-bottom: 3px;
+}
+
+/* Footer */
+.device-footer {
+    margin-top: 15px;
+    text-align: right;
+}
+
+/* Delete button */
+.btn-delete {
+    color: white;
+    background-color: #f44336;
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.btn-delete:hover {
+    background-color: #d32f2f;
+}
+
+.section ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+
+.btn-update {
+    color: white;
+    background-color: dodgerblue;
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: 0.3s;
+    margin: 5px;
+}
+
+.btn-update:hover {
+    background-color: blue;
+}

@@ -1,0 +1,44 @@
+/* container tất cả devices */
+.device-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+/* card từng device */
+.device-block {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    padding: 20px; /* tăng padding cho đẹp */
+    width: 300px; /* hơi rộng hơn */
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* tiêu đề device - chữ to hơn */
+.device-block h3 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 22px; /* tăng từ 18px lên 22px */
+    font-weight: bold;
+}
+
+/* danh sách sensor */
+.sensor-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* item sensor - chữ to hơn */
+.sensor-item {
+    background-color: #e3f2fd;
+    padding: 8px 12px; /* tăng padding */
+    border-radius: 6px;
+    font-size: 16px; /* tăng từ 14px lên 16px */
+    color: #0277bd;
+    font-weight: 500;
+}

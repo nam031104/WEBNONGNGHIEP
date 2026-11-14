@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Agriculture IoT</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/fragment/userLayout.css">
+    <style>
+        :root {
+            --bg-main: #f0f2f5;
+            --bg-sidebar: #ffffff;
+            --bg-glass: #ffffff;
+            --border-glass: rgba(0, 0, 0, 0.1);
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --shadow-glass: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            overflow: auto !important;
+            height: auto !important;
+        }
+        .app-container {
+            display: block;
+            height: auto;
+            min-height: 100vh;
+        }
+        .main-content {
+            padding-top: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .glass {
+            background: white !important;
+            border: 1px solid rgba(0,0,0,0.08) !important;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05) !important;
+        }
+        .device-selector select {
+            background: #fff !important;
+            color: #333 !important;
+            border: 1px solid #ddd !important;
+        }
+        .device-control-card h3 {
+            color: #333;
+        }
+        .control-row span {
+            color: #666;
+        }
+        .data-table thead th {
+            background: #f8fafc;
+            color: #64748b;
+        }
+        .data-table tbody td {
+            color: #1e293b;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .schedule-section {
+            margin-top: 50px;
+            padding: 30px !important;
+        }
+        .schedule-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        #add-schedule-btn {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        #add-schedule-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        .topbar { display: none; }
+    </style>
+</head>
+<body>
+    <div th:replace="~{fragment/userLayout :: header}"></div>
+    <div class="app-container">
+        <!-- Main Content Area -->
+        <main class="main-content">
+
+            <div class="content-wrapper">
+                <!-- Part 2: Device Control & Scheduling -->
+                <section id="control-view" class="view-section active">
+                    <div class="section-header">
+                        <h2>Device Control & Schedule</h2>
+                        <p>Manage operating modes and manual overrides.</p>
+                    </div>
+
+                    <div class="device-selector glass" style="margin-bottom: 20px; padding: 15px 24px; display: flex; align-items: center; justify-content: space-between;">
+                        <div>
+                            <h3 style="margin-bottom: 5px;">Khu vực điều khiển</h3>
+                            <p style="color: rgba(255,255,255,0.6); font-size: 0.85rem;">Chọn Node thiết bị để xem và điều khiển</p>
+                        </div>
+                        <select id="node-select" style="padding: 10px 16px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; color: white; min-width: 250px; outline: none;">
+                            <option value="">-- Đang tải Node... --</option>
+                        </select>
+                    </div>
+
+                    <!-- Rendered dynamically by devices.js -->
+                    <div id="devices-control-grid" class="devices-control-grid"></div>
+
+                    <div class="schedule-section glass">
+                        <div class="schedule-header">
+                            <h3>Device Scheduling</h3>
+                            <button class="btn btn-primary" id="add-schedule-btn" onclick="openScheduleModal()"><i class="ph ph-plus"></i> Add Schedule</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Actor ID</th>
+                                        <th>Loại</th>
+                                        <th>Th&#7901;i gian</th>
+                                        <th>Ghi ch&#250;</th>
+                                        <th>Tr&#7841;ng th&#225;i</th>
+                                        <th>Thao t&#225;c</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="schedule-tbody">
+                                    <!-- Populated via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+    <div th:replace="~{fragment/userLayout :: footer}"></div>
+
+
+    <!-- Schedule Modal -->
+    <div id="schedule-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;">
+        <div style="background:#ffffff;border:1px solid rgba(0,0,0,.1);border-radius:20px;padding:32px;width:420px;max-width:95vw;box-shadow:0 20px 40px rgba(0,0,0,0.15);">
+            <h3 id="modal-title" style="color:#1e293b;margin-bottom:20px;font-size:1.1rem;font-weight:700;">&#x1F4C5; Thêm Lịch Mới</h3>
+            
+            <label style="color:#64748b;font-size:.82rem;display:block;margin-bottom:6px;font-weight:500;">Thiết bị</label>
+            <select id="modal-device-select" style="width:100%;padding:10px 14px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;color:#1e293b;margin-bottom:14px;font-size:.9rem;outline:none;">
+                <option value="">-- Chọn thiết bị --</option>
+            </select>
+            
+            <label style="color:#64748b;font-size:.82rem;display:block;margin-bottom:6px;font-weight:500;">Chọn Actor (Động cơ)</label>
+            <select id="modal-actor-select" style="width:100%;padding:10px 14px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;color:#1e293b;margin-bottom:14px;font-size:.9rem;outline:none;">
+                <option value="">-- Chọn Actor --</option>
+            </select>
+
+            <label style="color:#64748b;font-size:.82rem;display:block;margin-bottom:6px;font-weight:500;">Lệnh Điều Khiển</label>
+            <div style="display:flex;gap:10px;margin-bottom:14px;">
+                <select id="modal-mode" style="flex:1;padding:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;color:#1e293b;font-size:.85rem;outline:none;" onchange="document.getElementById('modal-status').disabled = (this.value === '1'); if(this.value === '1') document.getElementById('modal-status').value = '';">
+                    <option value="">-- Chế độ --</option>
+                    <option value="1">AUTO</option>
+                    <option value="0">MANUAL</option>
+                </select>
+                <select id="modal-status" style="flex:1;padding:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;color:#1e293b;font-size:.85rem;outline:none;">
+                    <option value="">-- Trạng thái --</option>
+                    <option value="1">BẬT (ON)</option>
+                    <option value="0">TẮT (OFF)</option>
+                </select>
+            </div>
+            
+            <label style="color:#64748b;font-size:.82rem;display:block;margin-bottom:6px;font-weight:500;">Thời gian thực hiện</label>
+            <input type="datetime-local" id="modal-datetime" style="width:100%;padding:10px 14px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;color:#1e293b;margin-bottom:14px;font-size:.9rem;">
+            
+            <label style="color:#64748b;font-size:.82rem;display:block;margin-bottom:6px;font-weight:500;">Ghi chú</label>
+            <input type="text" id="modal-note" placeholder="Ghi chú..." style="width:100%;padding:10px 14px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;color:#1e293b;margin-bottom:20px;font-size:.9rem;outline:none;">
+            
+            <div style="display:flex;gap:10px;justify-content:flex-end;">
+                <button onclick="closeScheduleModal()" style="padding:10px 20px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:10px;color:#64748b;cursor:pointer;font-size:.9rem;font-weight:500;">Hủy</button>
+                <button onclick="submitSchedule()" style="padding:10px 20px;background:linear-gradient(135deg,#22c55e,#16a34a);border:none;border-radius:10px;color:#fff;cursor:pointer;font-size:.9rem;font-weight:600;">&#x2714; Lưu lịch</button>
+            </div>
+        </div>
+    </div>
+    <!-- Modular JS -->
+    <script src="/js/api.js?v=2"></script>
+    <script src="/js/navigation.js?v=2"></script>
+    <script src="/js/devices.js?v=2"></script>
+    <script src="/js/app.js?v=3"></script>
+    <script>
+        // Set fake user info since auth is removed
+        document.getElementById('user-name').textContent = "Tester";
+        document.getElementById('user-role').textContent = "Developer";
+    </script>
+</body>
+</html>

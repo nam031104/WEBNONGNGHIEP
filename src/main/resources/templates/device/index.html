@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Thiết bị</title>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="/css/device/device.css">
+    <link rel="stylesheet" href="/css/fragment/userLayout.css">
+</head>
+
+<body>
+
+<!-- GỌI HEADER -->
+<div th:replace="~{fragment/userLayout :: header}"></div>
+
+<div class="main-content">
+    <div class="container">
+        <div class="page-header">
+            <h1>Danh sách thiết bị</h1>
+            <a class="btn-add" th:href="@{'/user/device/create'}">+ Thêm thiết bị</a>
+        </div>
+
+        <div class="device-list">
+            <div class="device-card" th:each="device : ${deviceDtos}">
+
+                <div class="device-header">
+                    <h2 th:text="${device.name}"></h2>
+                    <span class="device-type" th:text="${device.typeDevice}"></span>
+                </div>
+
+                <div class="device-body">
+
+                    <!-- Sensors -->
+                    <div class="section">
+                        <h4>🌡 Sensors</h4>
+                        <ul class="no-dot">
+                            <li th:each="sensor : ${device.sensors}"
+                                th:text="${sensor.typeSensor}">
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Actors -->
+                    <div class="section">
+                        <h4>⚙️ Actors</h4>
+                        <ul class="no-dot">
+                            <li th:each="actor : ${device.actors}"
+                                th:text="${actor.typeActor}">
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+
+                <div class="device-footer">
+                    <a class="btn-update"
+                       th:href="@{'/user/device/update/' + ${device.idDevice}}">
+                        Sửa
+                    </a>
+
+                    <a class="btn-delete"
+                       th:href="@{'/user/device/delete/' + ${device.idDevice}}"
+                       onclick="return confirm('Bạn chắc chắn xóa?')">
+                        Xóa
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- GỌI FOOTER -->
+<div th:replace="~{fragment/userLayout :: footer}"></div>
+
+</body>
+</html>

@@ -1,0 +1,63 @@
+/* components.css - Chỉ giữ lại Control và Schedule */
+.glass {
+    background: var(--bg-glass);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-glass);
+}
+
+.devices-control-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.device-control-card {
+    padding: 1.5rem;
+    text-align: center;
+    transition: var(--transition);
+}
+
+.device-control-card.active {
+    border-color: var(--accent-green);
+    background: rgba(16, 185, 129, 0.05);
+}
+
+.icon-large { font-size: 2.5rem; margin-bottom: 1rem; color: var(--text-secondary); }
+.active .icon-large { color: var(--accent-green); }
+
+.control-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Switches */
+.switch { position: relative; width: 50px; height: 26px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+    position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+    background: #334155; transition: .4s; border-radius: 34px;
+}
+.slider:before {
+    position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px;
+    background: white; transition: .4s; border-radius: 50%;
+}
+input:checked + .slider { background: var(--accent-green); }
+input:checked + .slider:before { transform: translateX(24px); }
+input:disabled + .slider { opacity: 0.3; }
+
+/* Table */
+.data-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+.data-table th, .data-table td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border-glass); }
+.badge { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; }
+.badge.blue { background: var(--accent-blue); color: white; }
+.badge.gray { background: #475569; color: white; }
+
+.btn-action { padding: 4px 10px; border-radius: 4px; border: none; cursor: pointer; font-size: 0.8rem; }
+.btn-action.edit { background: rgba(59, 130, 246, 0.2); color: var(--accent-blue); }
+.btn-action.del { background: rgba(239, 68, 68, 0.2); color: var(--accent-red); }

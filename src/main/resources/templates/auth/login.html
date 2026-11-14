@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dang nhap</title>
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+</head>
+<body>
+<main class="auth-shell">
+    <section class="auth-card">
+        <p class="eyebrow">IoT Nông Nghiệp</p>
+        <h1>Đăng nhập hệ thống</h1>
+        <p class="subtitle">Quản lý tài khoản và phân quyền cho dự án nông nghiệp thông minh.</p>
+
+        <div class="alert error" th:if="${error}" th:text="${error}"></div>
+        <div class="alert success" th:if="${success}" th:text="${success}"></div>
+        <div class="alert success" th:if="${param.logout}">Đăng xuất thành công.</div>
+
+        <form th:action="@{/login}" method="post" class="auth-form">
+            <label for="username">Username</label>
+            <input id="username" name="username" type="text" placeholder="nhap username" required>
+
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" placeholder="nhap mat khau" required>
+
+            <button type="submit">Đăng nhập</button>
+        </form>
+
+        <p class="switch-link">
+            Chưa có tài khoản?
+            <a th:href="@{/register}">Đăng ký ngay</a>
+        </p>
+    </section>
+</main>
+</body>
+</html>

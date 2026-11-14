@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Quản Lý Thành Viên — Admin</title>
+
+    <!-- CSS layout dùng chung -->
+    <link rel="stylesheet" href="/css/fragment/userLayout.css">
+
+    <!-- CSS riêng trang -->
+    <style>
+        /* nền chung */
+        body {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+
+        /* giữ footer luôn dưới */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        /* container */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        /* tiêu đề */
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        /* bảng */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #2c3e50;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* badge */
+        .rank-badge {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .rank-Vàng {
+            background: #f1c40f;
+            color: white;
+        }
+
+        .rank-Bạc {
+            background: #bdc3c7;
+            color: #2c3e50;
+        }
+
+        .rank-Đồng {
+            background: #e67e22;
+            color: white;
+        }
+
+        /* button */
+        .btn {
+            padding: 7px 14px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-edit {
+            background: #1abc9c;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #16a085;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div th:replace="~{fragment/adminLayout :: header}"></div>
+
+<!-- MAIN -->
+<div class="main-content">
+    <div class="container">
+        <h1>👑 Quản Lý Thành Viên (Admin)</h1>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Tài khoản</th>
+                <th>Hạng hiện tại</th>
+                <th>Số dư tích lũy</th>
+                <th>Thao tác</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:each="m : ${memberships}">
+                <td th:text="${m.username}">Tên User</td>
+
+                <td>
+                    <span class="rank-badge"
+                          th:classappend="'rank-' + ${m.rankName}"
+                          th:text="${m.rankName}">
+                        Đồng
+                    </span>
+                </td>
+
+                <td th:text="${#numbers.formatDecimal(m.balance, 0, 'COMMA', 0, 'POINT') + ' ₫'}">
+                    0 ₫
+                </td>
+
+                <td>
+                    <button class="btn btn-edit"
+                            th:data-id="${m.idMembership}"
+                            onclick="openChangeRank(this)">
+                        Đổi hạng
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<div th:replace="~{fragment/adminLayout :: footer}"></div>
+
+<!-- SCRIPT -->
+<script>
+    function openChangeRank(button) {
+        const id = button.getAttribute('data-id');
+
+        const newRank = prompt("Nhập hạng mới muốn đổi (Đồng, Bạc, Vàng):");
+
+        if (newRank) {
+            const validRanks = ["Đồng", "Bạc", "Vàng"];
+            if (!validRanks.includes(newRank)) {
+                alert("Vui lòng chỉ nhập: Đồng, Bạc, hoặc Vàng");
+                return;
+            }
+
+            const params = new URLSearchParams();
+            params.append('rankName', newRank);
+
+            fetch('/admin/membership/api/' + id + '/rank', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: params
+            })
+            .then(res => res.text())
+            .then(data => {
+                if (data === "Success") {
+                    alert("✅ Thành công! Hạng và số dư đã được cập nhật.");
+                    location.reload();
+                } else {
+                    alert("❌ Lỗi: " + data);
+                }
+            })
+            .catch(err => {
+                alert("❌ Lỗi kết nối server!");
+                console.error(err);
+            });
+        }
+    }
+</script>
+
+</body>
+</html>
+
