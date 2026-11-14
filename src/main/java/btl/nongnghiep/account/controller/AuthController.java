@@ -4,6 +4,7 @@ import btl.nongnghiep.account.entity.Account;
 import btl.nongnghiep.account.repository.AccountRepository;
 import btl.nongnghiep.account.security.JwtUtils;
 import btl.nongnghiep.mqtt.Mqtt;
+import btl.nongnghiep.notification.service.NotificationService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -31,18 +32,21 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
     private final boolean cookieSecure;
+    private final NotificationService notificationService;
 
     public AuthController(AuthenticationManager authenticationManager,
                           AccountRepository accountRepository,
                           PasswordEncoder passwordEncoder,
                           JwtUtils jwtUtils,
                           Mqtt mqtt,
+                          NotificationService notificationService,
                           @Value("${app.jwt.cookie-secure:false}") boolean cookieSecure) {
         this.authenticationManager = authenticationManager;
         this.accountRepository = accountRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtils = jwtUtils;
         this.cookieSecure = cookieSecure;
+        this.notificationService = notificationService;
     }
 
     @GetMapping("/login")
@@ -87,6 +91,9 @@ public class AuthController {
         account.setPassword(passwordEncoder.encode(account.getPassword()));
         accountRepository.save(account);
         redirectAttributes.addFlashAttribute("success", "Dang ky thanh cong. Vui long dang nhap.");
+        notificationService.createNotification(account.getIdAccount(),
+                "Chào mừng bạn đến với trang Web quản lí thiết bị iot của chúng tôi. " +
+                        "Bạn có thể nâng cấp tài khoản bất cứ lúc nào để có trải nghiệm tốt hơn!");
         return "redirect:/login";
     }
 

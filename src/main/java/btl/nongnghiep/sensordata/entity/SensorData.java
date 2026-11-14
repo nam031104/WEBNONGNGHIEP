@@ -1,9 +1,8 @@
 package btl.nongnghiep.sensordata.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
 
 @Entity
 public class SensorData {
@@ -11,17 +10,17 @@ public class SensorData {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String idData;
     private String idSensor;
-    private float value;
+    private Float value;
     private String unit;
-    @jakarta.persistence.Column(name = "created_at")
-    private String createdAt;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
-    @jakarta.persistence.PrePersist
-    protected void onCreate() {
-        if (this.createdAt == null) {
-            this.createdAt = java.time.LocalDateTime.now().toString();
-        }
-    }
+//    @jakarta.persistence.PrePersist
+//    protected void onCreate() {
+//        if (this.createdAt == null) {
+//            this.createdAt = java.time.LocalDateTime.now().toString();
+//        }
+//    }
 
     public String getIdData() {
         return idData;
@@ -39,11 +38,11 @@ public class SensorData {
         this.idSensor = idSensor;
     }
 
-    public float getValue() {
+    public Float getValue() {
         return value;
     }
 
-    public void setValue(float value) {
+    public void setValue(Float value) {
         this.value = value;
     }
 
@@ -55,11 +54,11 @@ public class SensorData {
         this.unit = unit;
     }
 
-    public String getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 }

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>No Sensor Data</title>
+    <link rel="stylesheet" th:href="@{/css/sensor-chart.css}">
+</head>
+<body>
+<div class="page-shell">
+    <div class="hero">
+        <div>
+            <h1>Sensor Data Monitoring</h1>
+            <p>Không có dữ liệu cảm biến</p>
+        </div>
+    </div>
+    <div class="content-grid">
+        <section class="panel" style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+            <h2>⚠️ Chưa có dữ liệu</h2>
+            <p class="muted" th:text="${error}">Chưa có dữ liệu cảm biến nào trong hệ thống.</p>
+        </section>
+    </div>
+</div>
+</body>
+</html>

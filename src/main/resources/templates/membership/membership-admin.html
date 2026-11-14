@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Quản Lý Thành Viên — Admin</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f4f0; padding: 20px; color: #1a2e1a; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { color: #2d7a3a; margin-bottom: 25px; display: flex; align-items: center; gap: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #f8fdf8; color: #2d7a3a; font-weight: 700; }
+        .rank-badge { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; text-transform: uppercase; }
+        .rank-Vàng { background: #fefce8; color: #b8860b; border: 1px solid #d4b800; }
+        .rank-Bạc { background: #f3f4f6; color: #606060; border: 1px solid #c0c2c6; }
+        .rank-Đồng { background: #fdf0e0; color: #cd7f32; border: 1px solid #e8c99a; }
+        .btn { padding: 8px 16px; border-radius: 8px; cursor: pointer; border: none; font-weight: bold; transition: 0.2s; }
+        .btn-edit { background: #2d7a3a; color: white; }
+        .btn-edit:hover { background: #235f2c; }
+        tr:hover { background-color: #f9fdf9; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>👑 Quản Lý Thành Viên (Admin)</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>Tài khoản</th>
+            <th>Hạng hiện tại</th>
+            <th>Số dư tích lũy</th>
+            <th>Thao tác</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="m : ${memberships}">
+            <td th:text="${m.username}">Tên User</td>
+            <td>
+                <span class="rank-badge" th:classappend="'rank-' + ${m.rankName}" th:text="${m.rankName}">Đồng</span>
+            </td>
+            <td th:text="${#numbers.formatDecimal(m.balance, 0, 'COMMA', 0, 'POINT') + ' ₫'}">0 ₫</td>
+            <td>
+                <button class="btn btn-edit"
+                        th:data-id="${m.idMembership}"
+                        onclick="openChangeRank(this)">
+                    Đổi hạng
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function openChangeRank(button) {
+        // Lấy ID từ thuộc tính data-id đã lưu
+        const id = button.getAttribute('data-id');
+
+        const newRank = prompt("Nhập hạng mới muốn đổi (Đồng, Bạc, Vàng):");
+
+        if (newRank) {
+            const validRanks = ["Đồng", "Bạc", "Vàng"];
+            if (!validRanks.includes(newRank)) {
+                alert("Vui lòng chỉ nhập: Đồng, Bạc, hoặc Vàng");
+                return;
+            }
+
+            // Gửi yêu cầu cập nhật về Server
+            const params = new URLSearchParams();
+            params.append('rankName', newRank);
+
+            fetch('/admin/membership/api/' + id + '/rank', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: params
+            })
+            .then(res => res.text())
+            .then(data => {
+                if(data === "Success") {
+                    alert("✅ Thành công! Hạng và số dư đã được cập nhật theo luật mới.");
+                    location.reload();
+                } else {
+                    alert("❌ Lỗi từ hệ thống: " + data);
+                }
+            })
+            .catch(err => {
+                alert("❌ Lỗi kết nối server!");
+                console.error(err);
+            });
+        }
+    }
+</script>
+</body>
+</html>
